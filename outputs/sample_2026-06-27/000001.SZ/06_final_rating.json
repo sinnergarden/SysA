@@ -1,0 +1,28 @@
+{
+  "trade_date": "2026-06-27",
+  "ts_code": "000001.SZ",
+  "name": "Sample Bank A",
+  "model_logic_summary": "Illustrative placeholder output only. Model selection leans on earnings revision, valuation spread, and profit quality factors.",
+  "financial_validation": "support",
+  "industry_validation": "neutral",
+  "catalyst_heat": "warming",
+  "bear_cases": [
+    "Regional credit quality could weaken if local demand slows.",
+    "Catalyst is modest rather than transformative."
+  ],
+  "rating": "B",
+  "confidence": "medium",
+  "one_line_summary": "Placeholder example: supportive financial template with moderate catalyst and manageable but real risk.",
+  "evidence_ids": [
+    "000001.SZ_model_001",
+    "000001.SZ_financial_001",
+    "000001.SZ_news_001"
+  ],
+  "rating_rationale": [
+    "Financial template broadly supports the model logic.",
+    "Industry context is not clearly strong enough for an A rating.",
+    "Catalyst is useful but not decisive."
+  ],
+  "why_not_higher": "Industry support is only neutral and catalyst strength is moderate.",
+  "why_not_lower": "Core financial and model evidence are not materially contradictory."
+}

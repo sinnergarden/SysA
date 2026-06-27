@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "trade_date",
+    "ts_code",
+    "name",
+    "model_logic_summary",
+    "financial_validation",
+    "industry_validation",
+    "catalyst_heat",
+    "bear_cases",
+    "rating",
+    "confidence",
+    "one_line_summary",
+    "evidence_ids",
+    "rating_rationale",
+    "why_not_higher",
+    "why_not_lower"
+  ],
+  "properties": {
+    "trade_date": {"type": "string"},
+    "ts_code": {"type": "string"},
+    "name": {"type": "string"},
+    "model_logic_summary": {"type": "string"},
+    "financial_validation": {"enum": ["support", "neutral", "against", "insufficient"]},
+    "industry_validation": {"enum": ["support", "neutral", "against", "insufficient"]},
+    "catalyst_heat": {"enum": ["cold", "warming", "hot", "overheated", "unknown"]},
+    "bear_cases": {"type": "array", "items": {"type": "string"}},
+    "rating": {"enum": ["A", "B", "C", "D"]},
+    "confidence": {"enum": ["high", "medium", "low"]},
+    "one_line_summary": {"type": "string"},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "rating_rationale": {"type": "array", "items": {"type": "string"}},
+    "why_not_higher": {"type": "string"},
+    "why_not_lower": {"type": "string"}
+  },
+  "additionalProperties": false
+}

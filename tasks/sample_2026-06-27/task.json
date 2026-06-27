@@ -1,0 +1,42 @@
+{
+  "task_id": "sample_2026-06-27",
+  "trade_date": "2026-06-27",
+  "universe": [
+    {
+      "ts_code": "000001.SZ",
+      "name": "Sample Bank A",
+      "model_score": 0.82,
+      "feature_contrib": {
+        "earnings_revision": 0.31,
+        "valuation_spread": 0.22,
+        "profit_quality": 0.18
+      },
+      "industry": "Regional Banking",
+      "input_paths": {
+        "financial_template_json": "tasks/sample_2026-06-27/inputs/000001.SZ/financial_template.json",
+        "company_memory_json": "memory/company/sample_company_memory.json",
+        "industry_memory_json": "memory/industry/sample_industry_memory.json",
+        "news_search_results_json": "tasks/sample_2026-06-27/inputs/000001.SZ/news_search_results.json",
+        "announcements_json": "tasks/sample_2026-06-27/inputs/000001.SZ/announcements.json"
+      }
+    },
+    {
+      "ts_code": "600000.SH",
+      "name": "Sample Robotics B",
+      "model_score": 0.76,
+      "feature_contrib": {
+        "order_momentum": 0.29,
+        "gross_margin_trend": 0.19,
+        "theme_exposure": 0.14
+      },
+      "industry": "Industrial Robotics",
+      "input_paths": {
+        "financial_template_json": "tasks/sample_2026-06-27/inputs/600000.SH/financial_template.json",
+        "company_memory_json": "memory/company/sample_company_memory.json",
+        "industry_memory_json": "memory/industry/sample_industry_memory.json",
+        "news_search_results_json": "tasks/sample_2026-06-27/inputs/600000.SH/news_search_results.json",
+        "announcements_json": "tasks/sample_2026-06-27/inputs/600000.SH/announcements.json"
+      }
+    }
+  ]
+}

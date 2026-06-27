@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["task_id", "trade_date", "universe"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "trade_date": {"type": "string"},
+    "universe": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ts_code", "name", "model_score", "feature_contrib", "industry", "input_paths"],
+        "properties": {
+          "ts_code": {"type": "string"},
+          "name": {"type": "string"},
+          "model_score": {"type": "number"},
+          "feature_contrib": {"type": "object"},
+          "industry": {"type": "string"},
+          "input_paths": {
+            "type": "object",
+            "properties": {
+              "financial_template_json": {"type": "string"},
+              "company_memory_json": {"type": "string"},
+              "industry_memory_json": {"type": "string"},
+              "news_search_results_json": {"type": "string"},
+              "announcements_json": {"type": "string"}
+            },
+            "additionalProperties": {"type": "string"}
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

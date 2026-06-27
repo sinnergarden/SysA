@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "task_id",
+    "trade_date",
+    "status",
+    "current_symbol",
+    "next_step",
+    "completed_steps",
+    "failed_step",
+    "failure_reason",
+    "updated_at"
+  ],
+  "properties": {
+    "task_id": {"type": "string"},
+    "trade_date": {"type": "string"},
+    "status": {"enum": ["pending", "running", "failed", "completed"]},
+    "current_symbol": {"type": ["string", "null"]},
+    "next_step": {
+      "enum": [
+        "01_model_explain",
+        "02_financial_check",
+        "03_news_catalyst",
+        "04_industry_check",
+        "05_bear_case",
+        "06_final_rating",
+        "07_memory_update",
+        "done"
+      ]
+    },
+    "completed_steps": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "string"}
+      }
+    },
+    "failed_step": {"type": ["string", "null"]},
+    "failure_reason": {"type": ["string", "null"]},
+    "updated_at": {"type": "string"}
+  },
+  "additionalProperties": false
+}

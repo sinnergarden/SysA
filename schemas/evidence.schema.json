@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "ts_code",
+    "step",
+    "source_type",
+    "source_path_or_url",
+    "title",
+    "claim",
+    "extracted_fact",
+    "as_of_date",
+    "reliability",
+    "raw_ref"
+  ],
+  "properties": {
+    "evidence_id": {"type": "string"},
+    "ts_code": {"type": "string"},
+    "step": {"type": "string"},
+    "source_type": {
+      "enum": ["filing", "earnings", "news", "announcement", "memo", "industry_note", "other"]
+    },
+    "source_path_or_url": {"type": "string"},
+    "title": {"type": "string"},
+    "claim": {"type": "string"},
+    "extracted_fact": {"type": "string"},
+    "as_of_date": {"type": "string"},
+    "reliability": {"enum": ["high", "medium", "low"]},
+    "raw_ref": {"type": "string"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "trade_date",
+    "ts_code",
+    "name",
+    "model_score",
+    "model_logic_summary",
+    "key_drivers",
+    "evidence_ids",
+    "evidence_insufficient"
+  ],
+  "properties": {
+    "trade_date": {"type": "string"},
+    "ts_code": {"type": "string"},
+    "name": {"type": "string"},
+    "model_score": {"type": "number"},
+    "model_logic_summary": {"type": "string"},
+    "key_drivers": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "evidence_insufficient": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

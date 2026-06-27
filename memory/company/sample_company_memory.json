@@ -1,0 +1,8 @@
+{
+  "scope": "sample_company_memory",
+  "notes": [
+    "Use this file as a placeholder for durable company-level memory only.",
+    "Store repeated business traits, recurring execution strengths, or persistent risk flags.",
+    "Do not store short-term market noise or single-day sentiment."
+  ]
+}
