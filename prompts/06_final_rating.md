@@ -1,20 +1,20 @@
-# Step 06 Final Rating
+# 第六步：最终评级
 
-Purpose:
+目的：
 
-- Aggregate steps 01 to 05 into one research priority rating.
+- 汇总前五步的结构化输出，给出最终研究评级。
 
-Do:
+应该做：
 
-- Output rating `A/B/C/D`
-- Output confidence `high/medium/low`
-- Summarize model logic, financial validation, industry validation, catalyst heat, and bear case
-- Include `rating_rationale`
-- Explain why the symbol does not deserve a higher rating if applicable
-- Explain why the symbol does not deserve a lower rating if applicable
+- 输出 `A / B / C / D`
+- 输出 `high / medium / low`
+- 汇总模型逻辑、财务验证、行业验证、新闻催化和反证情况
+- 输出 `rating_rationale`
+- 说明为什么不能给更高评级
+- 说明为什么也不该给更低评级
 
-Do not:
+不要做：
 
-- Invent new evidence
-- Give trade instructions
-- Output free-form prose outside JSON
+- 不发明新证据
+- 不给交易建议
+- 不输出 JSON 之外的散文

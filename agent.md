@@ -1,37 +1,55 @@
-# SysA Design
+# SysA 总设计说明
 
-## System Goal
+## 系统目标
 
-`SysA` is a minimal research-agent scaffold for reviewing `Qsys` stock candidates with a deterministic file-system workflow. Its purpose is to turn model candidates plus supporting materials into structured research evidence, step outputs, final research ratings, and memory update suggestions.
+`SysA` 是一个面向 `Qsys` 候选股票研究的文件系统任务链框架。它的目标是把：
 
-## Non-Goal
+- 模型候选股票
+- 财报模板
+- 新闻与公告检索结果
+- 公司 memory
+- 行业 memory
 
-- No trading instruction generation
-- No portfolio action automation
-- No market data ingestion framework
-- No LLM API integration
-- No hidden reasoning in Python
-- No database, queue, or web service
+转成：
 
-## Inputs
+- 结构化 research evidence
+- 分步 JSON 输出
+- 最终研究评级
+- memory 更新建议
 
-Primary input is `tasks/<task_id>/task.json`, which contains:
+整个过程要求可审计、可重跑、可恢复。
 
-- Task metadata
-- Candidate universe
-- Relative paths to supporting input files
+## 非目标
 
-Optional supporting inputs per symbol include:
+`SysA` 不做以下事情：
 
-- Financial template JSON
-- Company memory JSON
-- Industry memory JSON
-- News search results JSON
-- Announcement JSON
+- 不生成交易指令
+- 不连接券商或交易系统
+- 不自动下单
+- 不接入数据库、消息队列、Web 服务
+- 不在 Python 中写研究推理逻辑
+- 不内置 LLM API 调用
+- 不实现复杂抓取框架
 
-## Outputs
+## 输入
 
-Per symbol, each step writes one JSON file under:
+主输入是 `tasks/<task_id>/task.json`，其中包含：
+
+- 任务元信息
+- 候选股票列表
+- 每只股票对应的输入文件路径
+
+可选支持材料包括：
+
+- 财务模板 JSON
+- 公司 memory JSON
+- 行业 memory JSON
+- 新闻检索结果 JSON
+- 公告 JSON
+
+## 输出
+
+每只股票独立输出到自己的目录：
 
 - `outputs/<task_id>/<ts_code>/01_model_explain.json`
 - `outputs/<task_id>/<ts_code>/02_financial_check.json`
@@ -41,25 +59,53 @@ Per symbol, each step writes one JSON file under:
 - `outputs/<task_id>/<ts_code>/06_final_rating.json`
 - `outputs/<task_id>/<ts_code>/07_memory_update.json`
 
-This single-symbol directory design keeps reruns and failure recovery simple.
+这种单股票目录粒度是故意设计的，目的是：
 
-## Evidence, Memory, Output
+- 方便单票重跑
+- 方便失败恢复
+- 方便未来并行化
+- 避免多股票混写一个 JSON
 
-### Evidence
+## evidence / memory / output 的区别
 
-Evidence is the fact layer. It may come from filings, announcements, financial templates, news, industry notes, or memory documents. Evidence should preserve source reference, extracted fact, and reliability metadata. Evidence is not a rating.
+### evidence
 
-### Memory
+`evidence` 是证据层，不是结论层。它保存：
 
-Memory is compressed long-term knowledge. It should only keep stable, reusable knowledge, such as repeated business patterns, recurring risk flags, or structural industry traits. Short-term price action, single-day sentiment, and unverified rumor should not be written into memory.
+- 来源
+- 标题
+- 抽取事实
+- claim
+- 可靠度
+- 原始引用位置
 
-### Output
+后续 step 通过 `evidence_id` 引用它。
 
-Output is the step conclusion layer. Every step must emit JSON only. Any key conclusion must cite one or more `evidence_id` values, or explicitly mark `evidence_insufficient`.
+### memory
 
-## Task Chain
+`memory` 是长期认知层，只存稳定、可复用、跨期仍有意义的认知，比如：
 
-The chain is step-based and restartable:
+- 公司长期经营特征
+- 重复出现的风险点
+- 行业景气与供需的结构性规律
+
+以下内容不应进入 memory：
+
+- 单日新闻情绪
+- 短期价格波动
+- 未验证传闻
+- 一次性题材噪音
+
+### output
+
+`output` 是阶段结论层。每一步都必须输出 JSON，所有关键判断必须：
+
+- 绑定 `evidence_id`
+- 或显式标注 `evidence_insufficient`
+
+## 任务链执行方式
+
+执行顺序固定为：
 
 1. `01_model_explain`
 2. `02_financial_check`
@@ -69,82 +115,106 @@ The chain is step-based and restartable:
 6. `06_final_rating`
 7. `07_memory_update`
 
-Each step reads only the current symbol, required inputs, and explicitly listed prior outputs. It does not reload all raw materials by default.
+每一步都只读取：
 
-## Step Boundaries
+- 当前股票
+- 该步所需输入
+- 该步明确依赖的前序输出
 
-### 01 Model Explain
+不默认重新塞入所有原始材料。
 
-Explains why the model selected the symbol based on score and feature contribution only.
+## 每个 step 的职责边界
 
-### 02 Financial Check
+### 01 模型解释
 
-Checks whether financial template data supports or contradicts the model logic. It does not analyze news or industry conditions.
+只解释模型为何选中该股票，只看 `model_score` 与 `feature_contrib`，不看财报、新闻、行业。
 
-### 03 News Catalyst
+### 02 财务验证
 
-Reviews recent news, announcements, report headlines, and similar near-term information. It must separate fundamental catalyst from sentiment heat.
+只检查财务模板是否支持模型逻辑，不扩写新闻、行业或最终评级。
 
-### 04 Industry Check
+### 03 新闻催化
 
-Judges supply-demand, industry cycle, chain position, and concept-hype risk. It does not replace industry reasoning with stock-price performance.
+只看近期新闻、公告、研报标题、互动易等近期信息，区分基本面催化与情绪热度，不把热度直接当利好。
 
-### 05 Bear Case
+### 04 行业检查
 
-Builds the counter-case and highlights vulnerabilities, contradictions, and weak links in prior reasoning.
+只判断行业供需、景气度、产业链位置、概念炒作风险，可参考行业 memory。
 
-### 06 Final Rating
+### 05 反证与风险
 
-Aggregates step `01` to `05` into a final research rating and confidence. It cannot invent new evidence or output trading instructions.
+只主动找反证、脆弱点和逻辑漏洞，挑战前面形成的乐观叙事。
 
-### 07 Memory Update
+### 06 最终评级
 
-Produces proposed long-term memory updates only. It does not rewrite evidence and does not auto-commit memory changes.
+只汇总 `01~05` 的结构化输出，给出研究评级和置信度，不补造新证据，不写交易建议。
 
-## Failure Recovery
+### 07 memory 更新建议
 
-`tasks/<task_id>/state.json` tracks current symbol, next step, completed steps, and failure status. Recovery rule:
+只输出压缩后的长期认知更新建议，不自动写回 memory 文件，不把短期噪音沉淀进去。
 
-- If a step fails, stop immediately.
-- Write `failed_step`, `failure_reason`, and `status=failed`.
-- Resume from `current_symbol + next_step` after fixing the issue.
-- If an output file already exists and passes schema validation, rerun may skip it.
+## 失败恢复机制
 
-## JSON Persistence Rules
+`tasks/<task_id>/state.json` 负责保存执行状态，包括：
 
-- All outputs must be valid JSON.
-- All paths should be relative to repo root.
-- Every step writes exactly one JSON file per symbol.
-- Evidence references use `evidence_id`.
-- Missing or weak inputs must map to `insufficient` or `unknown`, never fabrication.
+- 当前股票
+- 下一步
+- 已完成步骤
+- 失败步骤
+- 失败原因
+- 更新时间
 
-## Evidence ID Rule
+恢复规则：
 
-Recommended format:
+- 任一步失败，立即停止
+- 写入 `failed_step`、`failure_reason`、`status=failed`
+- 修复后从 `current_symbol + next_step` 恢复
+- 如果输出文件已存在且通过 schema 校验，可跳过重跑
+
+## JSON 落盘规范
+
+- 所有输出必须是合法 JSON
+- 所有路径应尽量使用相对路径
+- 每步每票只写一个 JSON 输出文件
+- 所有关键判断绑定 `evidence_id`
+- 输入不足时输出 `insufficient` 或 `unknown`
+- 不允许脑补和编造
+
+## evidence_id 规范
+
+推荐格式：
 
 - `{ts_code}_{step}_{index}`
 
-Example:
+例如：
 
 - `000001.SZ_news_001`
 
-Within the same task date, each `evidence_id` must be unique.
+同一任务日内，`evidence_id` 必须唯一。
 
-## Rating Standard
+## 评级标准
 
-- `A`: model logic is clear, validation is strong, catalyst is usable, and bear case is limited. High manual research priority.
-- `B`: some support exists, but important uncertainty remains. Worth tracking.
-- `C`: support is average, incomplete, or weak. Lower priority.
-- `D`: the main evidence does not support the logic, or risk outweighs research value.
+- `A`：模型逻辑清楚，财务或行业验证强，近期催化明确，反证有限，值得优先人工深挖
+- `B`：存在一定支持证据，但关键不确定性仍在，值得继续跟踪
+- `C`：支持一般、证据不完整、催化偏弱或反证较多，暂不优先
+- `D`：主要证据不支持模型逻辑，或风险明显高于研究价值，低优先级
 
-These ratings express research priority and manual attention level only. They are not trading instructions.
+这里的评级含义是研究优先级和人工关注等级，不是交易指令。
 
-## Confidence Standard
+## confidence 标准
 
-- `high`: multiple reliable pieces of evidence support the core judgment with limited conflict
-- `medium`: partial support exists, but gaps or conflicts remain
-- `low`: evidence is insufficient, weak, or unresolved
+- `high`：关键判断有多条高可靠证据支撑，冲突较少
+- `medium`：有部分证据支持，但仍有缺口或冲突
+- `low`：证据明显不足、来源较弱或关键问题未解决
 
-## Trading Boundary
+## 禁止自动交易
 
-This system must not generate automatic trade instructions, order suggestions, position sizing, or execution advice. It outputs research ratings only.
+`SysA` 不得自动生成：
+
+- 买卖建议
+- 目标价
+- 仓位建议
+- 执行指令
+- 自动下单动作
+
+它只输出研究评级与研究依据。

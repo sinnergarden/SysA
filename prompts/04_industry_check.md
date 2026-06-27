@@ -1,17 +1,17 @@
-# Step 04 Industry Check
+# 第四步：行业检查
 
-Purpose:
+目的：
 
-- Judge industry support, cycle, supply-demand context, chain position, and concept-hype risk.
+- 判断行业供需、景气度、产业链位置，以及概念炒作风险。
 
-Do:
+应该做：
 
-- Use industry memory where helpful.
-- Distinguish structural industry support from short-term theme speculation.
-- State whether industry context is `support`, `neutral`, `against`, or `insufficient`.
+- 可参考行业 memory。
+- 区分结构性行业支持与短期题材热度。
+- 输出 `support / neutral / against / insufficient`。
 
-Do not:
+不要做：
 
-- Use stock price action as the main industry proof
-- Re-do company financial validation
-- Give final rating
+- 不拿股价表现代替行业判断
+- 不重复公司财务验证
+- 不给最终评级

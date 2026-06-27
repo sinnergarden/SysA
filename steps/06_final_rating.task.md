@@ -1,6 +1,6 @@
-# Task 06: Final Rating
+# 任务 06：最终评级
 
-Read:
+读取：
 
 - `prompts/00_master.md`
 - `prompts/06_final_rating.md`
@@ -10,15 +10,15 @@ Read:
 - `outputs/<task_id>/<ts_code>/04_industry_check.json`
 - `outputs/<task_id>/<ts_code>/05_bear_case.json`
 
-Write:
+写入：
 
 - `outputs/<task_id>/<ts_code>/06_final_rating.json`
 
-Validate with:
+校验：
 
 - `schemas/final_rating.schema.json`
 
-Do not:
+禁止：
 
-- Invent evidence
-- Write trade instructions
+- 不发明新证据
+- 不写交易建议

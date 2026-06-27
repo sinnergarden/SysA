@@ -1,2 +1,15 @@
 __pycache__/
 *.pyc
+
+# 运行态输出默认不入库
+evidence/raw/**/*
+evidence/parsed/**/*
+evidence/agent_outputs/**/*
+outputs/**/*
+
+# 保留框架占位与 sample 样例
+!evidence/raw/.gitkeep
+!evidence/parsed/.gitkeep
+!evidence/agent_outputs/.gitkeep
+!outputs/**/.gitkeep
+!outputs/sample_2026-06-27/000001.SZ/06_final_rating.json

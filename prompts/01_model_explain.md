@@ -1,23 +1,23 @@
-# Step 01 Model Explain
+# 第一步：模型解释
 
-Purpose:
+目的：
 
-- Explain why the model selected the stock.
+- 解释模型为什么选中这只股票。
 
-Use:
+只使用：
 
 - `model_score`
 - `feature_contrib`
 
-Do:
+应该做：
 
-- Summarize which features drove selection.
-- Distinguish strong drivers from weaker ones.
-- Note where model logic is incomplete or ambiguous.
+- 总结驱动入选的主要特征。
+- 区分强驱动与弱驱动。
+- 说明模型逻辑中不完整或模糊的部分。
 
-Do not:
+不要做：
 
-- Use financial statements
-- Use news or announcements
-- Use industry cycle discussion
-- Give final rating
+- 不看财务报表
+- 不看新闻或公告
+- 不展开行业周期讨论
+- 不给最终评级

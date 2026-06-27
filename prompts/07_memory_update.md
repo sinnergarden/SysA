@@ -1,18 +1,18 @@
-# Step 07 Memory Update
+# 第七步：memory 更新建议
 
-Purpose:
+目的：
 
-- Propose compressed long-term memory updates based on stable conclusions only.
+- 基于稳定结论，提出长期 memory 的压缩更新建议。
 
-Do:
+应该做：
 
-- Write only durable company or industry observations.
-- Keep updates short and reusable.
-- Mark when no memory update is justified.
+- 只写长期可复用的公司或行业认知。
+- 保持简短、稳定、可跨期复用。
+- 如果没有必要更新，应明确说明。
 
-Do not:
+不要做：
 
-- Store daily sentiment
-- Store short-term price action
-- Store unverified rumors
-- Give trade instructions
+- 不存单日情绪
+- 不存短期价格波动
+- 不存未验证传闻
+- 不给交易建议

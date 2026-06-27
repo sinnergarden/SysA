@@ -1,6 +1,6 @@
-# Task 05: Bear Case
+# 任务 05：反证与风险
 
-Read:
+读取：
 
 - `prompts/00_master.md`
 - `prompts/05_bear_case.md`
@@ -9,15 +9,15 @@ Read:
 - `outputs/<task_id>/<ts_code>/03_news_catalyst.json`
 - `outputs/<task_id>/<ts_code>/04_industry_check.json`
 
-Write:
+写入：
 
 - `outputs/<task_id>/<ts_code>/05_bear_case.json`
 
-Validate with:
+校验：
 
 - `schemas/bear_case.schema.json`
 
-Do not:
+禁止：
 
-- Output final rating
-- Update memory
+- 不输出最终评级
+- 不更新 memory

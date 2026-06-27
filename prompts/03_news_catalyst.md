@@ -1,18 +1,18 @@
-# Step 03 News Catalyst
+# 第三步：新闻催化
 
-Purpose:
+目的：
 
-- Review recent news, announcements, report headlines, or investor-interaction summaries for near-term catalysts.
+- 检查近期新闻、公告、研报标题、互动易等信息里是否存在可用催化。
 
-Do:
+应该做：
 
-- Separate fundamental catalyst from topic heat.
-- Note source reliability.
-- Identify whether the information is confirming, neutral, contradictory, or speculative.
-- Classify heat as `cold`, `warming`, `hot`, `overheated`, or `unknown`.
+- 区分基本面催化与情绪热度。
+- 标注来源可靠度。
+- 判断信息是确认、偏中性、矛盾，还是偏题材炒作。
+- 将热度归类为 `cold / warming / hot / overheated / unknown`。
 
-Do not:
+不要做：
 
-- Assume hot news is positive
-- Replace financial validation
-- Give final rating
+- 不把热度直接当利好
+- 不替代财务验证
+- 不给最终评级

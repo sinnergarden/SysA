@@ -1,17 +1,17 @@
-# Step 02 Financial Check
+# 第二步：财务验证
 
-Purpose:
+目的：
 
-- Test whether financial template data supports the model logic from step 01.
+- 检查财务模板数据是否支持第一步里的模型逻辑。
 
-Do:
+应该做：
 
-- Compare model-driven claims with revenue, margin, cash flow, leverage, and other supplied template facts.
-- Output `support`, `neutral`, `against`, or `insufficient`.
-- Highlight mismatches between model explanation and financial reality.
+- 把模型逻辑与收入、利润、利润率、现金流、杠杆等模板数据对照。
+- 输出 `support / neutral / against / insufficient`。
+- 明确指出模型解释与财务事实之间的匹配点和冲突点。
 
-Do not:
+不要做：
 
-- Use recent news heat as validation
-- Expand into industry analysis
-- Give final rating
+- 不用新闻热度代替验证
+- 不展开行业分析
+- 不给最终评级

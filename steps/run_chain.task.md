@@ -1,11 +1,11 @@
-# Run Chain
+# 任务链执行说明
 
-Purpose:
+目的：
 
-- Execute the research chain for each symbol in `tasks/<task_id>/task.json`
-- Support stop-on-failure and resume from `state.json`
+- 对 `tasks/<task_id>/task.json` 中的每只股票执行完整研究链
+- 支持失败停止与基于 `state.json` 的恢复
 
-Execution order:
+执行顺序：
 
 1. `01_model_explain`
 2. `02_financial_check`
@@ -15,27 +15,27 @@ Execution order:
 6. `06_final_rating`
 7. `07_memory_update`
 
-Rules:
+规则：
 
-- Process each symbol independently.
-- For each step, read the matching `steps/<step>.task.md`.
-- After each step:
-  - confirm output file exists
-  - validate with the matching schema
-  - update `tasks/<task_id>/state.json`
-- If step output already exists and passes schema validation, rerun may skip it.
-- If any step fails:
-  - stop immediately
-  - record `failed_step`
-  - record `failure_reason`
-  - set `status` to `failed`
-- Resume uses:
+- 每只股票独立执行。
+- 每一步都读取对应的 `steps/<step>.task.md`。
+- 每步结束后必须：
+  - 检查输出文件存在
+  - 用对应 schema 做校验
+  - 更新 `tasks/<task_id>/state.json`
+- 如果输出文件已经存在且通过 schema 校验，可选择跳过重跑。
+- 任一步失败时：
+  - 立即停止
+  - 记录 `failed_step`
+  - 记录 `failure_reason`
+  - 把 `status` 设为 `failed`
+- 恢复时使用：
   - `current_symbol`
   - `next_step`
 
-State expectations:
+状态含义：
 
-- `pending`: chain not started
-- `running`: currently in progress
-- `failed`: stopped due to a step error
-- `completed`: all symbols finished through `07_memory_update`
+- `pending`：尚未开始
+- `running`：执行中
+- `failed`：某一步失败后停止
+- `completed`：所有股票都执行到 `07_memory_update`

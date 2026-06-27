@@ -1,8 +1,13 @@
-# Tools
+# tools 说明
 
-This directory contains thin deterministic helpers only.
+这个目录只放很薄的确定性工具：
 
-- `validate_json.py`: validate a JSON file against a schema
-- `advance_state.py`: update `state.json` after a step succeeds or fails
+- `validate_json.py`：校验 JSON 是否符合 schema
+- `advance_state.py`：在 step 成功或失败后更新 `state.json`
 
-These scripts intentionally do not call LLMs or fetch remote data.
+这里不放：
+
+- LLM 调用
+- 爬虫
+- 真实数据接入
+- 复杂调度器

@@ -1,22 +1,22 @@
-# Task 03: News Catalyst
+# 任务 03：新闻催化
 
-Read:
+读取：
 
 - `prompts/00_master.md`
 - `prompts/03_news_catalyst.md`
 - `tasks/<task_id>/task.json`
-- Current symbol `news_search_results_json`
-- Current symbol `announcements_json`
+- 当前股票的 `news_search_results_json`
+- 当前股票的 `announcements_json`
 
-Write:
+写入：
 
 - `outputs/<task_id>/<ts_code>/03_news_catalyst.json`
 
-Validate with:
+校验：
 
 - `schemas/news_catalyst.schema.json`
 
-Do not:
+禁止：
 
-- Re-run financial validation
-- Output final rating
+- 不重复做财务验证
+- 不输出最终评级

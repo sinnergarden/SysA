@@ -1,17 +1,17 @@
-# Step 05 Bear Case
+# 第五步：反证与风险
 
-Purpose:
+目的：
 
-- Build the best counter-case against the current research narrative.
+- 构造最强的反方论证，主动找反证、脆弱点和失败路径。
 
-Do:
+应该做：
 
-- Search for contradiction, fragility, dependency, and failure modes.
-- Challenge optimistic assumptions from steps 01 to 04.
-- List risks that could invalidate further research priority.
+- 找矛盾、脆弱依赖、逻辑漏洞和潜在失效条件。
+- 挑战前面步骤里偏乐观的假设。
+- 列出会降低研究优先级的关键风险。
 
-Do not:
+不要做：
 
-- Create final rating
-- Update memory
-- Add unsupported facts
+- 不给最终评级
+- 不更新 memory
+- 不补造事实

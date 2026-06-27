@@ -1,23 +1,23 @@
-# Task 02: Financial Check
+# 任务 02：财务验证
 
-Read:
+读取：
 
 - `prompts/00_master.md`
 - `prompts/02_financial_check.md`
 - `tasks/<task_id>/task.json`
-- Current symbol `financial_template_json`
+- 当前股票的 `financial_template_json`
 - `outputs/<task_id>/<ts_code>/01_model_explain.json`
 
-Write:
+写入：
 
 - `outputs/<task_id>/<ts_code>/02_financial_check.json`
 
-Validate with:
+校验：
 
 - `schemas/financial_check.schema.json`
 
-Do not:
+禁止：
 
-- Use news or announcement logic as validation
-- Output industry conclusion
-- Output final rating
+- 不用新闻或公告逻辑代替验证
+- 不输出行业结论
+- 不输出最终评级

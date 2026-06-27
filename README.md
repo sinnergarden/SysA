@@ -1,49 +1,71 @@
 # SysA
 
-`SysA` is a minimal file-system-based research agent scaffold for `Qsys` candidate review. It does not call any LLM API by itself. Code agents execute markdown task files step by step and write JSON outputs to disk.
+`SysA` 是一个面向 `Qsys` 候选股票研究的最小可运行框架。它不是交易系统，也不是内置大模型调用的应用；它的定位是让 Claude Code、OpenClaw、Codex 这类代码 agent 按 markdown task 分步执行研究任务，并把全过程 JSON 落盘。
 
-## What It Does
+## 定位
 
-- Takes a daily `task.json` from `Qsys`
-- Runs a seven-step research chain for each symbol
-- Stores evidence, per-step outputs, final rating, and memory update suggestions
-- Supports failure stop, schema validation, and resume from `state.json`
+- 输入：`Qsys` 产出的每日候选股票任务包
+- 过程：按固定 7 步研究链逐步执行
+- 输出：结构化 evidence、分步 JSON、最终评级、memory 更新建议
+- 边界：不下单、不接交易、不自动给买卖指令
 
-## What It Does Not Do
+## 总流程图
 
-- No trading connection
-- No order generation
-- No crawler framework
-- No database or service layer
-- No embedded LLM orchestration in Python
+```mermaid
+flowchart TD
+    A[Qsys 生成 task.json] --> B[state.json 初始化]
+    B --> C{按股票逐只执行}
+    C --> D[01 模型解释]
+    D --> E[02 财务验证]
+    E --> F[03 新闻催化]
+    F --> G[04 行业检查]
+    G --> H[05 反证与风险]
+    H --> I[06 最终评级]
+    I --> J[07 memory 更新建议]
+    J --> K[输出写入 outputs/<task_id>/<ts_code>/]
+    K --> L{是否全部完成}
+    L -- 否 --> C
+    L -- 是 --> M[任务完成]
 
-## Layout
+    D -. 校验输出 + 更新 state .-> N[state.json]
+    E -. 校验输出 + 更新 state .-> N
+    F -. 校验输出 + 更新 state .-> N
+    G -. 校验输出 + 更新 state .-> N
+    H -. 校验输出 + 更新 state .-> N
+    I -. 校验输出 + 更新 state .-> N
+    J -. 校验输出 + 更新 state .-> N
 
-- `prompts/`: research rules for each step
-- `steps/`: execution task files for code agents
-- `schemas/`: JSON schema contracts
-- `tasks/`: task packages and sample inputs
-- `outputs/`: per-symbol step outputs
-- `evidence/`: raw, parsed, and agent-produced evidence artifacts
-- `memory/`: compressed long-term company and industry memory
-- `tools/`: thin local helpers
+    X[任一步失败] --> Y[记录 failed_step / failure_reason]
+    Y --> Z[停止并等待恢复]
+```
 
-## How To Use
+## 目录说明
 
-1. Let `Qsys` generate a task package like `tasks/<task_id>/task.json`.
-2. Initialize `tasks/<task_id>/state.json`.
-3. Run `steps/run_chain.task.md` with a code agent, or execute steps `01` to `07` manually per symbol.
-4. After each step, write JSON output to `outputs/<task_id>/<ts_code>/`.
-5. Validate each output with `tools/validate_json.py`.
-6. Update `state.json` with `tools/advance_state.py`.
-7. Final result for each symbol is `outputs/<task_id>/<ts_code>/06_final_rating.json`.
-8. `07_memory_update.json` is only a suggested memory patch, not an automatic write-back.
+- `prompts/`：每一步的研究规则
+- `steps/`：给代码 agent 执行的任务文件
+- `schemas/`：JSON schema 契约
+- `tasks/`：任务包、sample 输入与状态文件
+- `outputs/`：按股票拆分的分步输出
+- `evidence/`：原始证据、解析证据、agent 产出证据
+- `memory/`：公司与行业长期认知
+- `tools/`：两个很薄的本地工具
 
-## Sample Run
+## 使用方式
 
-The sample task lives in `tasks/sample_2026-06-27/`.
+1. 让 `Qsys` 生成 `tasks/<task_id>/task.json`
+2. 初始化 `tasks/<task_id>/state.json`
+3. 按 `steps/run_chain.task.md` 执行，或手动按 `01 -> 07` 顺序逐步执行
+4. 每一步把输出写入 `outputs/<task_id>/<ts_code>/`
+5. 用 `tools/validate_json.py` 校验输出
+6. 用 `tools/advance_state.py` 更新 `state.json`
+7. 每只股票的最终结论在 `06_final_rating.json`
+8. `07_memory_update.json` 只是 memory 更新建议，不自动写回
 
-Example validation command:
+## Sample 说明
+
+sample 任务位于 `tasks/sample_2026-06-27/`，只用于演示框架，不构成任何投资建议。
+
+示例校验命令：
 
 ```bash
 python3 tools/validate_json.py \
@@ -51,7 +73,7 @@ python3 tools/validate_json.py \
   outputs/sample_2026-06-27/000001.SZ/06_final_rating.json
 ```
 
-Example state advance command:
+示例推进状态命令：
 
 ```bash
 python3 tools/advance_state.py \
@@ -62,12 +84,18 @@ python3 tools/advance_state.py \
   --status success
 ```
 
-## Evidence And Memory
+## evidence / memory / output
 
-- Evidence is the full research trace. Keep raw material references and structured extracted facts.
-- Memory is compressed long-term knowledge. Do not write short-term noise into it.
-- Outputs are step conclusions. Every important judgment must cite `evidence_id` or mark `evidence_insufficient`.
+- `evidence`：研究证据层，保留出处、事实抽取和可靠度
+- `memory`：长期认知层，只保留稳定、可复用的认知
+- `output`：阶段结论层，每步都是结构化 JSON
 
-## Sample Data Notice
+所有关键判断都必须绑定 `evidence_id`，否则应显式标注 `evidence_insufficient`。
 
-All sample symbol data and sample inputs in this repo are fictional placeholders for framework demonstration only. They are not investment advice.
+## Git 使用约束
+
+仓库默认只提交框架文件、sample 文件和必要占位文件。
+
+- 运行时产物不要默认入库
+- `outputs/`、`evidence/` 下的动态内容应被 `.gitignore` 挡住
+- 后续新增真实任务包、真实证据、真实输出时，也应优先保持不入库，除非你明确要做样例沉淀
