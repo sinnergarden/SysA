@@ -9,6 +9,9 @@
     "summary",
     "structural_supports",
     "hype_risks",
+    "facts",
+    "inferences",
+    "uncertainties",
     "evidence_ids",
     "evidence_insufficient"
   ],
@@ -20,6 +23,9 @@
     "summary": {"type": "string"},
     "structural_supports": {"type": "array", "items": {"type": "string"}},
     "hype_risks": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "evidence_insufficient": {"type": "boolean"}
   },

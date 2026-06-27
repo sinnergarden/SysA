@@ -8,6 +8,9 @@
     "model_score",
     "model_logic_summary",
     "key_drivers",
+    "facts",
+    "inferences",
+    "uncertainties",
     "evidence_ids",
     "evidence_insufficient"
   ],
@@ -17,14 +20,11 @@
     "name": {"type": "string"},
     "model_score": {"type": "number"},
     "model_logic_summary": {"type": "string"},
-    "key_drivers": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
-    "evidence_ids": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
+    "key_drivers": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "evidence_insufficient": {"type": "boolean"}
   },
   "additionalProperties": false

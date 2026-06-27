@@ -81,6 +81,10 @@
 
 后续 step 通过 `evidence_id` 引用它。
 
+如果某一步产生新的事实性 claim，应落盘到：
+
+- `evidence/agent_outputs/<task_id>/<ts_code>/<step>.evidence.jsonl`
+
 ### memory
 
 `memory` 是长期认知层，只存稳定、可复用、跨期仍有意义的认知，比如：
@@ -184,11 +188,11 @@
 
 推荐格式：
 
-- `{ts_code}_{step}_{index}`
+- `{task_id}_{ts_code}_{step}_{index}`
 
 例如：
 
-- `000001.SZ_news_001`
+- `sample_2026-06-27_000001.SZ_news_001`
 
 同一任务日内，`evidence_id` 必须唯一。
 

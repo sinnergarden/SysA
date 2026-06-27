@@ -19,6 +19,13 @@
           "industry": {"type": "string"},
           "input_paths": {
             "type": "object",
+            "required": [
+              "financial_template_json",
+              "company_memory_json",
+              "industry_memory_json",
+              "news_search_results_json",
+              "announcements_json"
+            ],
             "properties": {
               "financial_template_json": {"type": "string"},
               "company_memory_json": {"type": "string"},

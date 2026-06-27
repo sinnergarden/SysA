@@ -9,6 +9,9 @@
     "summary",
     "matched_points",
     "mismatched_points",
+    "facts",
+    "inferences",
+    "uncertainties",
     "evidence_ids",
     "evidence_insufficient"
   ],
@@ -20,6 +23,9 @@
     "summary": {"type": "string"},
     "matched_points": {"type": "array", "items": {"type": "string"}},
     "mismatched_points": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "evidence_insufficient": {"type": "boolean"}
   },

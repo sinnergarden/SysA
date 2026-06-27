@@ -16,7 +16,10 @@
     "evidence_ids",
     "rating_rationale",
     "why_not_higher",
-    "why_not_lower"
+    "why_not_lower",
+    "facts",
+    "inferences",
+    "uncertainties"
   ],
   "properties": {
     "trade_date": {"type": "string"},
@@ -33,7 +36,10 @@
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "rating_rationale": {"type": "array", "items": {"type": "string"}},
     "why_not_higher": {"type": "string"},
-    "why_not_lower": {"type": "string"}
+    "why_not_lower": {"type": "string"},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}}
   },
   "additionalProperties": false
 }

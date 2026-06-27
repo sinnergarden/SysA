@@ -78,6 +78,7 @@ python3 tools/validate_json.py \
 ```bash
 python3 tools/advance_state.py \
   --state tasks/sample_2026-06-27/state.json \
+  --task tasks/sample_2026-06-27/task.json \
   --task-id sample_2026-06-27 \
   --ts-code 000001.SZ \
   --step 01_model_explain \
