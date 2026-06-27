@@ -9,6 +9,9 @@
     "fundamental_catalysts",
     "sentiment_catalysts",
     "summary",
+    "facts",
+    "inferences",
+    "uncertainties",
     "evidence_ids",
     "evidence_insufficient"
   ],
@@ -20,6 +23,9 @@
     "fundamental_catalysts": {"type": "array", "items": {"type": "string"}},
     "sentiment_catalysts": {"type": "array", "items": {"type": "string"}},
     "summary": {"type": "string"},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "evidence_insufficient": {"type": "boolean"}
   },

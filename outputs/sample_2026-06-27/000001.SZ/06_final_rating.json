@@ -14,9 +14,9 @@
   "confidence": "medium",
   "one_line_summary": "Placeholder example: supportive financial template with moderate catalyst and manageable but real risk.",
   "evidence_ids": [
-    "000001.SZ_model_001",
-    "000001.SZ_financial_001",
-    "000001.SZ_news_001"
+    "sample_2026-06-27_000001.SZ_model_001",
+    "sample_2026-06-27_000001.SZ_financial_001",
+    "sample_2026-06-27_000001.SZ_news_001"
   ],
   "rating_rationale": [
     "Financial template broadly supports the model logic.",
@@ -24,5 +24,15 @@
     "Catalyst is useful but not decisive."
   ],
   "why_not_higher": "Industry support is only neutral and catalyst strength is moderate.",
-  "why_not_lower": "Core financial and model evidence are not materially contradictory."
+  "why_not_lower": "Core financial and model evidence are not materially contradictory.",
+  "facts": [
+    "Sample financial template shows positive revenue and profit growth.",
+    "Catalyst heat is warming rather than hot."
+  ],
+  "inferences": [
+    "The symbol is worth follow-up research, but priority is not top tier."
+  ],
+  "uncertainties": [
+    "Industry support remains only neutral."
+  ]
 }

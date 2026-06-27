@@ -7,6 +7,9 @@
     "name",
     "bear_cases",
     "summary",
+    "facts",
+    "inferences",
+    "uncertainties",
     "evidence_ids",
     "evidence_insufficient"
   ],
@@ -16,6 +19,9 @@
     "name": {"type": "string"},
     "bear_cases": {"type": "array", "items": {"type": "string"}},
     "summary": {"type": "string"},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
     "evidence_ids": {"type": "array", "items": {"type": "string"}},
     "evidence_insufficient": {"type": "boolean"}
   },

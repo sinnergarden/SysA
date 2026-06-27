@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+tools/__pycache__/
 
 # 运行态输出默认不入库
 evidence/raw/**/*
