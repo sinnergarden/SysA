@@ -4,13 +4,13 @@ This file provides guidance to **developers maintaining this repo**. For runtime
 
 ## 项目定位
 
-SysA 的使命是**接收 Qsys 的纯数值模型输出（分数 + 因子贡献），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让代码 agent 按固定 7 步研究链逐票执行、全程结构化落盘。
+SysA 的使命是**接收 Qsys 的数值模型信号与结构化元数据（分数、因子贡献、因子定义），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让代码 agent 按固定 7 步研究链逐票执行、全程结构化落盘。
 
 Fork/clone 此 repo 后可直接 commit 使用。SysA 框架本身不内置外部服务调用；实际执行 step 需要本地已登录的 Claude Code CLI / Codex CLI 等代码 agent。
 
 ## 接口边界：Qsys 产出 vs SysA 研究
 
-Qsys 作为一个量化系统，只能产出**纯数值和结构化标签**。SysA 填补的是量化模型做不到、需要大语言模型推理的部分。边界如下：
+Qsys 作为一个量化系统，产出数值信号和结构化元数据。SysA 填补的是量化模型做不到、需要大语言模型推理的部分。边界如下：
 
 | 维度 | Qsys 能产出 | SysA 做（需要 LLM） |
 |------|------------|-------------------|
@@ -29,7 +29,7 @@ Qsys 作为一个量化系统，只能产出**纯数值和结构化标签**。Sy
 ## 架构概述
 
 ```
-Qsys (纯数值产出)               SysA (研究框架)                  代码 Agent (执行者)
+Qsys (数值信号 + 结构化元数据)     SysA (研究框架)                  代码 Agent (执行者)
    ┌──────────────┐           ┌──────────────────┐    读取 steps/*  ┌────────────────┐
    │ model_score   │           │  prompts/        │ ←───────────  │ Claude Code CLI │
    │ feature_contrib│ task.json│  steps/           │               │ Codex CLI       │
@@ -55,7 +55,7 @@ memory/ (SysA 自身积累，非 Qsys 产出)
 - **SysA 不内置 LLM 调用**，agent 负责 LLM 交互。
 - **SysA 不在 Python 中写推理逻辑**，研究规则在 `prompts/` 中。
 - **SysA 不下单、不接交易**，只输出 A/B/C/D 研究评级。
-- **Qsys 只出纯数值**：`model_score`、`feature_contrib`、`model_rank`、`industry` 标签、`factor_definitions`（结构化 key-value）。不含任何 NL 解释。
+- **Qsys 产出数值信号和结构化元数据**：`model_score`、`feature_contrib`、`model_rank`（数值信号）；`industry`（结构化标签）；`factor_definitions`（因子元数据）。不含 per-stock NL 解释。所有"为什么选中该股票"的逐股解释必须由 SysA step 01 生成。
 - **外部数据源提供原始材料**：财报模板、新闻结果、公告全文。这些不是 Qsys 产出，由独立数据源获取。
 - **SysA 积累自己的 memory**：`memory/` 下的 company/industry memory 是 SysA 在历次研究中积累的长期认知，不是 Qsys 的产出。
 

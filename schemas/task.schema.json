@@ -10,7 +10,7 @@
       "type": "object",
       "description": "全局因子释义表，key=因子名，value=一句话定义。Qsys 提供，纯结构化，非 NL 解释。",
       "patternProperties": {
-        "^[a-z_]+$": {"type": "string"}
+        "^[A-Za-z0-9_]+$": {"type": "string"}
       },
       "additionalProperties": false
     },
@@ -24,12 +24,12 @@
           "ts_code": {"type": "string", "description": "股票代码"},
           "name": {"type": "string", "description": "股票名称"},
           "model_score": {"type": "number", "description": "Qsys 模型打分，数值越高代表模型越看好"},
-          "model_rank": {"type": "integer", "description": "该股票在当日 universe 中的排名（1=最高分），Qsys 提供，可选"},
+          "model_rank": {"type": "integer", "description": "该股票在当日 Qsys 全量候选排序中的排名（1=最高分），不一定等于 task.json universe 内的局部排名。Qsys 提供，可选。"},
           "feature_contrib": {
             "type": "object",
             "description": "因子贡献度字典，key=因子名，value=贡献度数值。纯数值，不含 NL 解释。由 Qsys 产出。",
             "patternProperties": {
-              "^[a-z_]+$": {"type": "number"}
+              "^[A-Za-z0-9_]+$": {"type": "number"}
             },
             "additionalProperties": false
           },

@@ -2,9 +2,14 @@
 
 ## 系统目标
 
-`SysA` 是一个面向 `Qsys` 候选股票研究的文件系统任务链框架。它的使命是：**接收 Qsys 的纯数值模型输出（分数 + 因子贡献），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论。**
+`SysA` 是一个面向 `Qsys` 候选股票研究的文件系统任务链框架。它的使命是：**接收 Qsys 的数值模型信号与结构化元数据（分数、因子贡献、因子定义），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论。**
 
-Qsys 作为一个量化系统，只能产出纯数值和结构化标签。所有需要自然语言理解的推理步骤——因子解释、财报验证、催化分析、行业判断、反证挑战、综合评级——都在 SysA 中由代码 agent 完成。
+Qsys 产出数值信号和结构化元数据：
+- 数值信号：`model_score`、`model_rank`、`feature_contrib`
+- 结构化标签：`industry`
+- 因子元数据：`factor_definitions`
+
+Qsys 不产出 per-stock natural-language explanation。所有"为什么选中该股票"的逐股解释必须由 SysA step 01 生成。
 
 具体是把：
 
@@ -37,13 +42,13 @@ Qsys 作为一个量化系统，只能产出纯数值和结构化标签。所有
 
 主输入是 `tasks/<task_id>/task.json`，其中包含三类信息来源：
 
-### 1. Qsys 产出（纯数值，不含自然语言）
+### 1. Qsys 产出（数值信号 + 结构化元数据）
 
 - `universe[].model_score` — 模型对这只股票的打分
-- `universe[].feature_contrib` — 因子贡献度字典，如 `{"earnings_revision": 0.31}`。纯数值，不含解释
-- `universe[].model_rank` — 该股在当日的排名（可选）
+- `universe[].feature_contrib` — 因子贡献度字典，如 `{"earnings_revision": 0.31}`。纯数值，不含 NL 解释
+- `universe[].model_rank` — 该股在当日 Qsys 全量候选排序中的排名，不一定等于 task.json universe 内局部排名（可选）
 - `universe[].industry` — 行业分类标签
-- `factor_definitions` — 全局因子释义表，key=因子名，value=一句话定义。Qsys 提供，仍是结构化文本（如"盈利预测上修强度"），不需要 LLM 解释，但可供 step 01 的 agent 理解因子含义
+- `factor_definitions` — 全局因子释义表，key=因子名，value=一句话定义。Qsys 提供，仍然是结构化 key-value 映射，不需要 LLM 解释，但可供 step 01 的 agent 理解因子含义
 
 ### 2. 外部数据源提供（原始材料路径）
 
