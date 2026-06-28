@@ -4,40 +4,55 @@ This file provides guidance to **developers maintaining this repo**. For runtime
 
 ## 项目定位
 
-SysA 是一个**面向 Qsys 候选股票研究的最小可运行框架**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让 Claude Code CLI 按固定 7 步研究链逐票执行、全程结构化落盘。
+SysA 是一个**面向 Qsys 候选股票研究的最小可运行框架**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让代码 agent 按固定 7 步研究链逐票执行、全程结构化落盘。
 
-Fork/clone 此 repo 后可直接 commit 使用，不依赖外部服务。
+Fork/clone 此 repo 后可直接 commit 使用。SysA 框架本身不内置外部服务调用；实际执行 step 需要本地已登录的 Claude Code CLI / Codex CLI 等代码 agent。
 
 ## 架构概述
 
 ```
-Qsys (上游)                     SysA                           Claude Code CLI (执行者)
-   ┌──────┐    task.json       ┌──────────┐    claude code     ┌──────────────────┐
-   │ 候选  │ ──────────────→   │ 研究框架  │ ←──────────────  │ cron 定时触发      │
-   │ 股票  │                   │          │   读取 steps/*    │ claude code --print  │
-   │ 模型分│                   │  prompts │   写入 output/    │ tasks/run_chain.md   │
-   │ 输入  │                   │ /schemas │ ──────────────→  │ advance_state.py    │
-   └──────┘                   └──────────┘                   └──────────────────┘
+Qsys (上游)                     SysA                           代码 Agent (执行者)
+   ┌──────┐    task.json       ┌─────────────┐   读取 steps/*  ┌────────────────┐
+   │ 候选  │ ──────────────→   │ 研究框架     │ ←───────────  │ Claude Code CLI │
+   │ 股票  │                   │             │   写入 outputs/ │ Codex CLI       │
+   │ 模型分│                   │ prompts/    │ ────────────→  │ 等代码 agent    │
+   │ 输入  │                   │ schemas/     │                └────────────────┘
+   └──────┘                   └─────────────┘
 ```
 
-- **SysA 不内置 LLM 调用**，Claude Code CLI 负责 LLM 交互。
+- **SysA 不内置 LLM 调用**，agent 负责 LLM 交互。
 - **SysA 不在 Python 中写推理逻辑**，研究规则在 `prompts/` 中。
 - **SysA 不下单、不接交易**，只输出 A/B/C/D 研究评级。
-- **运行方式**：cron 定时拉起 `claude code --print steps/run_chain.task.md`，按 state.json 断点续跑。
 
-## 执行方式
+## 执行方式（当前 MVP）
 
-通过 cron 定时调度：
+当前 MVP 的执行方式是**手动逐步执行**：
 
 ```bash
-# crontab 示例：每个交易日 9:30 执行
-30 9 * * 1-5 cd /path/to/SysA && claude --print steps/run_chain.task.md
+# 手动执行单个 step（示例）
+claude --print steps/01_model_explain.task.md
 ```
 
-- `claude --print` 模式：非交互式执行，一次性读取 task 文件并运行，完成后退出。
-- 每次执行只跑当前 `state.json` 中 `current_symbol + next_step` 指定的一步，完成后调用 `advance_state.py` 推进状态。
-- 下一轮 cron 触发时读取已更新的 state.json，继续下一步。
-- `state.json` 支持断点恢复：某步失败后原地停住，下一轮 cron 触发时从同一位置重试。
+实际运行流程：
+
+1. 读取 `steps/<step>.task.md` —— 该文件写明读取哪个 prompt、哪些输入、输出到哪里、遵守哪个 schema。
+2. 手动或让 agent 按 state.json 的 `current_symbol + next_step` 确定从哪步继续。
+3. 每步完成后调用 `validate_json.py` 校验输出，再调用 `advance_state.py` 推进状态。
+4. 失败时停止，修复后从同一位置恢复。
+
+`steps/run_chain.task.md` 是任务链执行说明文档，不能当作直接可执行的脚本。它指导 agent 理解完整序列和恢复规则，但执行仍依赖 agent 的遵守，repo 目前没有内置调度器或自动 runner。
+
+### 后续计划：cron runner
+
+更稳定的自动化方案是在 `tools/` 中新增 `run_next_step.py`，其职责是：
+
+1. 读取 `tasks/<task_id>/state.json`，定位 `current_symbol + next_step`。
+2. 根据 step 名称自动组装单步 prompt（依赖关系在 `steps/*.task.md` 中定义）。
+3. 调用 `claude --print` 执行该步。
+4. 执行完成后调用 `advance_state.py` 推进状态。
+5. 配合 cron + `flock` 防并发 wrapper 实现每日定时调度。
+
+该 runner 当前**尚未实现**，待后续迭代添加。
 
 ## 关键命令
 
@@ -58,9 +73,11 @@ python3 tools/advance_state.py \
   --step 01_model_explain \
   --status success
 
-# 手动执行单个 step 测试（不通过 cron）
+# 手动执行单个 step 测试
 claude --print steps/01_model_explain.task.md
 ```
+
+> 注意：以上 `claude --print` 命令以本机 Claude Code CLI 实际命令名为准，当前文档示例假设 CLI 为 `claude`。实际运行时请先确认本地 CLI 命令（`claude --version` 或 `claude-code --version`）。
 
 ## tools/ 说明
 
@@ -100,12 +117,30 @@ claude --print steps/01_model_explain.task.md
 - sample 数据（`tasks/sample_2026-06-27/`）和 `outputs/sample_.../06_final_rating.json` 作为框架演示保留入库。
 - 后续新增真实任务包应保持不入库，除非是刻意做样例沉淀。
 
+## 当前状态 vs 后续计划
+
+### 已具备
+
+- `prompts/` + `steps/` + `schemas/` 构成完整的研究任务链协议
+- `tools/validate_json.py` schema 校验工具
+- `tools/advance_state.py` 状态机推进工具（支持按股票切换、失败记录、恢复）
+- `steps/run_chain.task.md` 链执行指导文档（依赖 agent 遵守）
+- `state.json` 断点恢复设计（current_symbol + next_step 定位）
+- sample 任务包与 demo 输出
+
+### 尚未实现
+
+- `tools/run_next_step.py` —— 读取 state.json 自动组装单步 prompt 的 thin runner
+- `tools/run_next_step.py` 内调用 `claude --print` 的能力
+- cron + `flock` 防并发 wrapper 实现每日定时调度
+- CLI 命令可配置化（如 `CLAUDE_CMD` 环境变量）
+
 ## 关键设计原则（影响扩展决策）
 
 | 原则 | 含义 |
 |------|------|
 | 文件系统即接口 | 不引入数据库、消息队列、Web 服务。输入输出都是文件。 |
 | evidence / memory / output 三层分离 | evidence = 事实出处层，memory = 长期知识层，output = 阶段结论层。不可混用。 |
-| Claude Code CLI 是执行者 | repo 不内置调度器。cron 定时拉起 `claude --print` 按步执行。 |
+| 代码 agent 是执行者 | repo 不内置调度器，不控制 agent 如何调用 LLM。agent 读取 task 文件自行执行。 |
 | schema 够用不过度 | 核心字段必须覆盖，但不追求完全的形式化完备。 |
 | 失败可恢复 | state.json 记录逐票进度；output 文件存在且通过校验时可跳过重跑。 |
