@@ -4,9 +4,9 @@
 
 - `prompts/00_master.md`
 - `prompts/01_model_explain.md`
-- `tasks/<task_id>/task.json`（当前股票条目）
+- `tasks/<task_id>/task.json`（当前股票条目 + 全局 `model_horizon`/`model_target`）
 
-只使用 `task.json` 中当前股票条目。`feature_contrib.universe_stats` 用于判断因子贡献度的高低，`feature_contrib.method` 用于评估归因可靠性。
+只使用 `task.json` 中当前股票条目和全局模型元数据。`feature_contrib.universe_stats` 用于判断因子贡献度的高低，`feature_contrib.method` 用于评估归因可靠性，`model_horizon`/`model_target` 用于理解 model_score 的业务含义。
 
 写入：
 

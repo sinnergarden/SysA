@@ -1,6 +1,8 @@
 {
   "task_id": "sample_2026-06-27",
   "trade_date": "2026-06-27",
+  "model_horizon": "60d",
+  "model_target": "return",
   "universe": [
     {
       "ts_code": "000001.SZ",

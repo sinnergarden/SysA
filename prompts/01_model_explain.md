@@ -6,6 +6,7 @@
 
 只使用：
 
+- `model_horizon` / `model_target` — 模型预测什么、预测多久。例如 `model_horizon: "60d", model_target: "return"` 表示"该模型预测未来 60 天截面收益排序"。这决定了 model_score 的业务含义。
 - `model_score` — 模型打分，在 universe 内相对比较
 - `feature_contrib.values` — 因子贡献度数值
 - `feature_contrib.universe_stats` — 各因子的分布统计，用于判断 0.31 在全量候选中的位置（高/中/低）
