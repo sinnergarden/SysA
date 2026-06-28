@@ -4,9 +4,9 @@
 
 - `prompts/00_master.md`
 - `prompts/01_model_explain.md`
-- `tasks/<task_id>/task.json`（当前股票条目 + 全局 `primary_model`）
+- `tasks/<task_id>/task.json`（当前股票条目 + 全局 `ranking_model`）
 
-只使用 `task.json` 中当前股票条目和全局 `primary_model`。`feature_contrib.universe_stats` 用于判断因子贡献度的高低，`feature_contrib.method` 用于评估归因可靠性，`auxiliary_signals` 用于交叉验证主信号方向。
+只使用 `task.json` 中当前股票条目和全局 `ranking_model`。核心数据是 `models[]` 数组——每个模型有独立的 score、feature_contrib、universe_stats。对比多模型的归因异同是 step 01 的核心分析。
 
 写入：
 

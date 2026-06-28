@@ -1,12 +1,12 @@
 # SysA
 
-`SysA` 是一个面向 `SysQ` 候选股票研究的最小可运行框架。它的使命是**接收 SysQ 的数值信号和结构化元数据（分数、因子贡献、辅助信号、模型定义），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。
+`SysA` 是一个面向 `SysQ` 候选股票研究的最小可运行框架。它的使命是**接收 SysQ 的融合排序信号和多模型因子归因（N 个模型 × N 套 SHAP），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。
 
 它不是交易系统，也不是内置大模型调用的应用；它的定位是让 Claude Code、Codex 这类代码 agent 按 markdown task 分步执行研究任务，并把全过程 JSON 落盘。
 
 ## 定位
 
-- 输入：SysQ 产出的数值信号（`model_score`、`feature_contrib.values`）与结构化元数据（`primary_model`、`feature_contrib.method`、`universe_stats`）及可选辅助信号（`auxiliary_signals[].value`）+ 外部原始材料（财报模板、新闻摘要、公告）。SysQ 不产出 per-stock 自然语言解释
+- 输入：SysQ 产出的融合排序分 `ranking_score`（仅用于排名选股）和多模型归因 `models[]`（每模型含 score + feature_contrib）+ 外部原始材料（财报模板、新闻摘要、公告）。SysQ 不产出 per-stock 自然语言解释
 - 过程：按固定 7 步研究链逐步执行。所有需要自然语言推理的步骤都在 SysA 中由 agent 完成**
 - 输出：结构化 evidence、分步 JSON、最终 A/B/C/D 评级、长期 memory 更新
 - 积累：`memory/` 下的 company / industry memory 是 SysA 历次研究积累的长期认知，**不是 SysQ 的产出**
