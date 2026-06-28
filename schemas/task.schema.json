@@ -1,47 +1,114 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["task_id", "trade_date", "universe"],
-  "description": "任务输入包。由 thin runner 组装，整合 Qsys 产出、外部数据路径、SysA 自身记忆路径。",
+  "required": ["task_id", "trade_date", "primary_model", "universe"],
+  "description": "任务输入包。由 thin runner 组装，整合 SysQ 产出、外部数据路径、SysA 自身记忆路径。",
   "properties": {
-    "task_id": {"type": "string", "description": "任务标识，格式建议 {trade_date}_v{N}"},
+    "task_id": {"type": "string", "description": "任务标识，格式 {trade_date}_v{N}"},
     "trade_date": {"type": "string", "description": "交易日，格式 YYYY-MM-DD"},
-    "factor_definitions": {
+    "primary_model": {
       "type": "object",
-      "description": "全局因子释义表，key=因子名，value=一句话定义。Qsys 提供，纯结构化，非 NL 解释。",
-      "patternProperties": {
-        "^[A-Za-z0-9_]+$": {"type": "string"}
-      },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": ["horizon", "target", "description"],
+      "description": "主信号定义。universe 按此信号的 model_score 降序排列，取 TopK 作为研究候选。",
+      "properties": {
+        "horizon": {"type": "string", "description": "预测周期，如 '60d' / '180d'"},
+        "target": {"type": "string", "description": "预测目标，如 'return' / 'rank' / 'excess_return'"},
+        "description": {"type": "string", "description": "一句话说明该模型含义，供 LLM 理解 model_score 的业务语义。如 '未来 60 天截面收益排序，越高越看好。'"}
+      }
     },
     "universe": {
       "type": "array",
       "minItems": 1,
+      "description": "候选股票列表。universe 内按 model_score 降序排列，位置即排名。",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["ts_code", "name", "model_score", "feature_contrib", "industry", "input_paths"],
         "properties": {
-          "ts_code": {"type": "string", "description": "股票代码"},
+          "ts_code": {"type": "string", "description": "股票代码，如 000001.SZ"},
           "name": {"type": "string", "description": "股票名称"},
-          "model_score": {"type": "number", "description": "Qsys 模型打分，数值越高代表模型越看好"},
-          "model_rank": {"type": "integer", "description": "该股票在当日 Qsys 全量候选排序中的排名（1=最高分），不一定等于 task.json universe 内的局部排名。Qsys 提供，可选。"},
+          "model_score": {"type": "number", "description": "主信号的模型打分。SysA 在 universe 内做相对比较。"},
           "feature_contrib": {
             "type": "object",
-            "description": "因子贡献度字典，key=因子名，value=贡献度数值。纯数值，不含 NL 解释。由 Qsys 产出。",
-            "patternProperties": {
-              "^[A-Za-z0-9_]+$": {"type": "number"}
-            },
-            "additionalProperties": false
+            "required": ["method", "values", "universe_stats"],
+            "description": "主信号的因子贡献度。method 说明归因方法，values 为因子→数值映射，universe_stats 为全量候选分布统计。",
+            "additionalProperties": false,
+            "properties": {
+              "method": {"type": "string", "description": "归因方法，如 shap / permutation_importance / linear_weight"},
+              "values": {
+                "type": "object",
+                "description": "因子贡献度数值。key=因子名, value=贡献度。最多保留 15 个贡献度最高的因子，按 |contrib| 降序排列。纯数值，不含 NL 解释。",
+                "patternProperties": {
+                  "^[A-Za-z0-9_]+$": {"type": "number"}
+                },
+                "additionalProperties": false
+              },
+              "universe_stats": {
+                "type": "object",
+                "description": "当日全量候选集上各因子的统计分布。",
+                "patternProperties": {
+                  "^[A-Za-z0-9_]+$": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "min": {"type": "number"}, "max": {"type": "number"}, "mean": {"type": "number"},
+                      "p50": {"type": "number"}, "p75": {"type": "number"}, "p90": {"type": "number"}
+                    },
+                    "required": ["min", "max", "mean", "p50", "p75", "p90"]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
           },
-          "industry": {"type": "string", "description": "行业分类标签，Qsys 提供"},
+          "auxiliary_signals": {
+            "type": "array",
+            "description": "可选。辅助信号列表。每个辅助信号有 name、description、value、feature_contrib。用于 step 01 做多模型信号交叉验证。",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "description", "value"],
+              "properties": {
+                "name": {"type": "string", "description": "信号名，如 '180d_return_zscore' / '60d_pos_prob'"},
+                "description": {"type": "string", "description": "一句话定义该信号，供 LLM 理解含义。如 '同一模型预测未来 180 天收益在全量候选上的 z-score'"},
+                "value": {"type": "number", "description": "该信号的数值"},
+                "feature_contrib": {
+                  "type": "object",
+                  "description": "可选。该信号的因子贡献度。结构和主信号的 feature_contrib 一致。",
+                  "additionalProperties": false,
+                  "properties": {
+                    "method": {"type": "string"},
+                    "values": {
+                      "type": "object",
+                      "patternProperties": {"^[A-Za-z0-9_]+$": {"type": "number"}},
+                      "additionalProperties": false
+                    },
+                    "universe_stats": {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[A-Za-z0-9_]+$": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "min": {"type": "number"}, "max": {"type": "number"}, "mean": {"type": "number"},
+                            "p50": {"type": "number"}, "p75": {"type": "number"}, "p90": {"type": "number"}
+                          },
+                          "required": ["min", "max", "mean", "p50", "p75", "p90"]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "industry": {"type": "string", "description": "行业分类标签，SysQ 提供"},
           "input_paths": {
             "type": "object",
-            "description": "输入文件路径。financial/news/announcements 由外部数据源提供；company/industry memory 是 SysA 历次研究积累的长期认知（可选，可能不存在）。",
-            "required": [
-              "financial_template_json",
-              "news_search_results_json",
-              "announcements_json"
-            ],
+            "description": "输入文件路径。financial/news/announcements 由外部数据源提供；company/industry memory 是 SysA 自身可选积累。",
+            "required": ["financial_template_json", "news_search_results_json", "announcements_json"],
             "properties": {
               "financial_template_json": {"type": "string", "description": "财报模板 JSON 路径，外部数据源提供"},
               "company_memory_json": {"type": "string", "description": "公司长期记忆 JSON 路径（可选），SysA 自身积累"},
@@ -51,8 +118,7 @@
             },
             "additionalProperties": {"type": "string"}
           }
-        },
-        "additionalProperties": true
+        }
       }
     }
   },

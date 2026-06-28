@@ -1,22 +1,22 @@
 # SysA
 
-`SysA` 是一个面向 `Qsys` 候选股票研究的最小可运行框架。它的使命是**接收 Qsys 的数值模型信号与结构化元数据（分数、因子贡献、因子定义），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。
+`SysA` 是一个面向 `SysQ` 候选股票研究的最小可运行框架。它的使命是**接收 SysQ 的数值信号和结构化元数据（分数、因子贡献、辅助信号、模型定义），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。
 
 它不是交易系统，也不是内置大模型调用的应用；它的定位是让 Claude Code、Codex 这类代码 agent 按 markdown task 分步执行研究任务，并把全过程 JSON 落盘。
 
 ## 定位
 
-- 输入：Qsys 产出的数值信号与结构化元数据（分数、因子贡献、因子定义、行业标签）+ 外部原始材料（财报模板、新闻摘要、公告）。Qsys 不产出 per-stock 自然语言解释
+- 输入：SysQ 产出的数值信号（`model_score`、`feature_contrib.values`）与结构化元数据（`primary_model`、`feature_contrib.method`、`universe_stats`）及可选辅助信号（`auxiliary_signals[].value`）+ 外部原始材料（财报模板、新闻摘要、公告）。SysQ 不产出 per-stock 自然语言解释
 - 过程：按固定 7 步研究链逐步执行。所有需要自然语言推理的步骤都在 SysA 中由 agent 完成**
 - 输出：结构化 evidence、分步 JSON、最终 A/B/C/D 评级、长期 memory 更新
-- 积累：`memory/` 下的 company / industry memory 是 SysA 历次研究积累的长期认知，**不是 Qsys 的产出**
+- 积累：`memory/` 下的 company / industry memory 是 SysA 历次研究积累的长期认知，**不是 SysQ 的产出**
 - 边界：不下单、不接交易、不自动给买卖指令
 
 ## 总流程图
 
 ```mermaid
 flowchart TD
-    A[Qsys 生成 task.json] --> B[state.json 初始化]
+    A[SysQ 输出候选信号文件] --> B[thin runner 组装 task.json]
     B --> C{按股票逐只执行}
     C --> D[01 模型解释]
     D --> E[02 财务验证]
@@ -55,8 +55,8 @@ flowchart TD
 
 ## 使用方式
 
-1. 让 `Qsys` 生成 `tasks/<task_id>/task.json`
-2. 初始化 `tasks/<task_id>/state.json`
+1. SysQ 在自身 `outputs/<trade_date>/` 下产出候选股票信号文件
+2. thin runner 或人工脚本读取 SysQ 输出，组装 `tasks/<task_id>/task.json`，初始化 `state.json`
 3. 按 `steps/run_chain.task.md` 执行，或手动按 `01 -> 07` 顺序逐步执行
 4. 每一步把输出写入 `outputs/<task_id>/<ts_code>/`
 5. 用 `tools/validate_json.py` 校验输出
