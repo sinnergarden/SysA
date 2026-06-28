@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "trade_date",
+    "industry",
+    "structural_supports",
+    "hype_risks",
+    "members_covered",
+    "summary"
+  ],
+  "properties": {
+    "trade_date": {"type": "string"},
+    "industry": {"type": "string"},
+    "structural_supports": {"type": "array", "items": {"type": "string"}},
+    "hype_risks": {"type": "array", "items": {"type": "string"}},
+    "members_covered": {"type": "array", "items": {"type": "string"}},
+    "summary": {"type": "string"}
+  },
+  "additionalProperties": false
+}
