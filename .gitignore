@@ -6,8 +6,7 @@ tools/__pycache__/
 research/**/*
 
 # 保留 sample 输出样例
-!research/sample_2026-06-27/.gitkeep
-!research/2026-06-26/output/*
+!research/2026-06-26/output/**/*
 
 # 保留框架占位
 !research/**/.gitkeep

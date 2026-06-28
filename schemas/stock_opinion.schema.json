@@ -7,15 +7,39 @@
     "key_drivers", "financial_assessment", "industry_support",
     "catalyst_assessment", "bear_cases", "rating_rationale",
     "why_not_higher", "why_not_lower", "memory_patch",
-    "facts", "inferences", "uncertainties"
+    "facts", "inferences", "uncertainties",
+    "evidence_ids", "evidence_insufficient"
   ],
   "properties": {
     "trade_date": {"type": "string"},
     "ts_code": {"type": "string"},
     "name": {"type": "string"},
     "industry": {"type": "string"},
-    "model_signals": {"type": "array"},
-    "data_sufficiency": {"type": "object"},
+    "model_signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "horizon": {"type": "string"},
+          "target": {"type": "string"},
+          "weight": {"type": "number"},
+          "score": {"type": "number"},
+          "top_drivers": {"type": "array", "items": {"type": "string"}},
+          "signal_summary": {"type": "string"}
+        }
+      }
+    },
+    "data_sufficiency": {
+      "type": "object",
+      "properties": {
+        "financial_data_available": {"type": "boolean"},
+        "news_data_available": {"type": "boolean"},
+        "announcement_data_available": {"type": "boolean"},
+        "industry_memory_available": {"type": "boolean"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "rating": {"enum": ["A", "B", "C", "D"]},
     "confidence": {"enum": ["high", "medium", "low"]},
     "one_line_summary": {"type": "string"},
@@ -27,10 +51,24 @@
     "rating_rationale": {"type": "array", "items": {"type": "string"}},
     "why_not_higher": {"type": "string"},
     "why_not_lower": {"type": "string"},
-    "memory_patch": {"type": "array"},
+    "memory_patch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "op": {"enum": ["add", "update", "delete", "no_change"]},
+          "target": {"enum": ["company", "industry"]},
+          "text": {"type": "string"},
+          "reason": {"type": "string"},
+          "evidence_ids": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
     "facts": {"type": "array", "items": {"type": "string"}},
     "inferences": {"type": "array", "items": {"type": "string"}},
-    "uncertainties": {"type": "array", "items": {"type": "string"}}
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_insufficient": {"type": "boolean"}
   },
   "additionalProperties": false
 }

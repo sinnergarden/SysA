@@ -45,8 +45,12 @@
 - 写入 `research/{trade_date}/output/stock_opinions/{ts_code}.json`
 - 遵守 `schemas/stock_opinion.schema.json`
 
-### 3. 评级规则
+### 3. 约束
 
+- `stock_opinion` 中每个关键结论必须绑定 `evidence_id`，或设置 `evidence_insufficient=true`
+- `industry_summary` 同样必须区分 `facts` / `inferences` / `uncertainties`，并填充 `evidence_ids`
+- `memory_patch` 不得写入短期噪音（当日新闻情绪、价格波动、传闻）。每条必须带 `evidence_ids`
+- `data_readiness` 中标记为 `missing` 的数据，不得在 B 中假装已读取
 - `financial_assessment = against` 时，最高评级不得超过 C
 - 关键数据缺失超过 2 项时，`confidence` 不得为 `high`
 - 行业判断仅作为背景参考，不得替代个股财务验证
