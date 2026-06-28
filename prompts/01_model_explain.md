@@ -6,20 +6,21 @@
 
 只使用：
 
-- `model_score`
-- `feature_contrib`
-- `factor_definitions`（全局因子释义表，辅助理解各因子含义）
+- `model_score` — 模型打分，在 universe 内相对比较
+- `feature_contrib.values` — 因子贡献度数值
+- `feature_contrib.universe_stats` — 各因子的分布统计，用于判断 0.31 在全量候选中的位置（高/中/低）
+- `feature_contrib.method` — 归因方法，用于评估数值可靠性（SHAP / 线性权重 / 等）
 
 应该做：
 
-- 总结驱动入选的主要特征。
-- 区分强驱动与弱驱动。
-- 说明模型逻辑中不完整或模糊的部分。
+- 对照 `universe_stats` 判断各因子贡献的幅度（该值处于什么分位）
+- 对照 `method` 评估归因可靠性
+- 总结驱动入选的主要特征，区分强驱动与弱驱动
+- 说明模型逻辑中不完整或模糊的部分
 
 约束：
 
-- `factor_definitions` 只能用于解释因子本身含义（如"earnings_revision 指盈利预测上修强度"），**不得**被直接当作正面或负面证据。
-- `feature_contrib` 的数值贡献可以解释模型信号的强弱和方向，**不能**替代财报、新闻、公告等外部证据。高的贡献度不等于基本面利好，低的贡献度也不等于基本面利空。
+- `feature_contrib.values` 的数值贡献可以解释模型信号的强弱和方向，**不能**替代财报、新闻、公告等外部证据。高的贡献度不等于基本面利好，低的贡献度也不等于基本面利空。
 
 不要做：
 
