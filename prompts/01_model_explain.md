@@ -25,6 +25,8 @@
 约束：
 
 - `feature_contrib.values` 的数值贡献可以解释模型信号的强弱和方向，**不能**替代财报、新闻、公告等外部证据。高的贡献度不等于基本面利好，低的贡献度也不等于基本面利空。
+- 输出中**不得使用 `model_score` 字段**。输出 `ranking_score`（仅说明 TopK 排序来源）和 `model_signal_summary`（各模型的独立分析）即可。
+- `ranking_score` 只能说明这只股票为什么进入研究候选，**不能作为任何归因判断的证据**。所有归因解释必须来自 `models[].feature_contrib`。
 
 不要做：
 

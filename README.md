@@ -7,7 +7,7 @@
 ## 定位
 
 - 输入：SysQ 产出的融合排序分 `ranking_score`（仅用于排名选股）和多模型归因 `models[]`（每模型含 score + feature_contrib）+ 外部原始材料（财报模板、新闻摘要、公告）。SysQ 不产出 per-stock 自然语言解释
-- 过程：按固定 7 步研究链逐步执行。所有需要自然语言推理的步骤都在 SysA 中由 agent 完成**
+- 过程：按固定 7 步研究链逐步执行。所有需要自然语言推理的步骤都在 SysA 中由 agent 完成
 - 输出：结构化 evidence、分步 JSON、最终 A/B/C/D 评级、长期 memory 更新
 - 积累：`memory/` 下的 company / industry memory 是 SysA 历次研究积累的长期认知，**不是 SysQ 的产出**
 - 边界：不下单、不接交易、不自动给买卖指令

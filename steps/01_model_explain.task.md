@@ -15,6 +15,7 @@
 校验：
 
 - `schemas/model_explain.schema.json`
+- 输出必须符合新的 `ranking_score` / `model_signal_summary` schema，不得输出旧字段 `model_score`
 
 evidence 落盘规则：
 
