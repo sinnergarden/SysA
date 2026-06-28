@@ -8,6 +8,7 @@
     "trade_date": {"type": "string", "description": "交易日，格式 YYYY-MM-DD"},
     "primary_model": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["horizon", "target", "description"],
       "description": "主信号定义。universe 按此信号的 model_score 降序排列，取 TopK 作为研究候选。",
       "properties": {
@@ -22,6 +23,7 @@
       "description": "候选股票列表。universe 内按 model_score 降序排列，位置即排名。",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["ts_code", "name", "model_score", "feature_contrib", "industry", "input_paths"],
         "properties": {
           "ts_code": {"type": "string", "description": "股票代码，如 000001.SZ"},
@@ -29,8 +31,9 @@
           "model_score": {"type": "number", "description": "主信号的模型打分。SysA 在 universe 内做相对比较。"},
           "feature_contrib": {
             "type": "object",
-            "required": ["method", "values"],
-            "description": "主信号的因子贡献度。method 说明归因方法，values 为因子→数值映射。可选附带 universe_stats 供 LLM 判断贡献度高低。",
+            "required": ["method", "values", "universe_stats"],
+            "description": "主信号的因子贡献度。method 说明归因方法，values 为因子→数值映射，universe_stats 为全量候选分布统计。",
+            "additionalProperties": false,
             "properties": {
               "method": {"type": "string", "description": "归因方法，如 shap / permutation_importance / linear_weight"},
               "values": {
@@ -43,10 +46,11 @@
               },
               "universe_stats": {
                 "type": "object",
-                "description": "可选。当日全量候选集上各因子的统计分布。",
+                "description": "当日全量候选集上各因子的统计分布。",
                 "patternProperties": {
                   "^[A-Za-z0-9_]+$": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                       "min": {"type": "number"}, "max": {"type": "number"}, "mean": {"type": "number"},
                       "p50": {"type": "number"}, "p75": {"type": "number"}, "p90": {"type": "number"}
@@ -63,6 +67,7 @@
             "description": "可选。辅助信号列表。每个辅助信号有 name、description、value、feature_contrib。用于 step 01 做多模型信号交叉验证。",
             "items": {
               "type": "object",
+              "additionalProperties": false,
               "required": ["name", "description", "value"],
               "properties": {
                 "name": {"type": "string", "description": "信号名，如 '180d_return_zscore' / '60d_pos_prob'"},
@@ -71,6 +76,7 @@
                 "feature_contrib": {
                   "type": "object",
                   "description": "可选。该信号的因子贡献度。结构和主信号的 feature_contrib 一致。",
+                  "additionalProperties": false,
                   "properties": {
                     "method": {"type": "string"},
                     "values": {
@@ -83,6 +89,7 @@
                       "patternProperties": {
                         "^[A-Za-z0-9_]+$": {
                           "type": "object",
+                          "additionalProperties": false,
                           "properties": {
                             "min": {"type": "number"}, "max": {"type": "number"}, "mean": {"type": "number"},
                             "p50": {"type": "number"}, "p75": {"type": "number"}, "p90": {"type": "number"}
@@ -111,8 +118,7 @@
             },
             "additionalProperties": {"type": "string"}
           }
-        },
-        "additionalProperties": true
+        }
       }
     }
   },
