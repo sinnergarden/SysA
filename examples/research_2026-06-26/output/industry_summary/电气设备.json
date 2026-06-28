@@ -1,0 +1,28 @@
+{
+  "trade_date": "2026-06-26",
+  "industry": "电气设备",
+  "structural_supports": [
+    "电网投资上行",
+    "核电建设加速"
+  ],
+  "hype_risks": [
+    "板块热度较高",
+    "原材料价格波动"
+  ],
+  "members_covered": [
+    "002130.SZ"
+  ],
+  "summary": "电气设备景气上行,新能源/电网基建拉动需求",
+  "facts": [
+    "行业分类:电气设备",
+    "公司主营核电缆附件"
+  ],
+  "inferences": [
+    "电网周期对需求有支撑"
+  ],
+  "uncertainties": [
+    "缺乏行业供需量化数据"
+  ],
+  "evidence_ids": [],
+  "evidence_insufficient": true
+}

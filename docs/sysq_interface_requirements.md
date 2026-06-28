@@ -4,7 +4,7 @@ SysA 消费 SysQ 每日产出的候选股票信号，做 LLM 研究评级。
 
 ## SysQ 每日输出
 
-SysQ 每日推理后，在 `outputs/{trade_date}/` 写一个文件（格式自定）。thin runner 读取后组装成 SysA 的 `tasks/{trade_date}/task.json`。
+SysQ 每日推理后，在自身 `outputs/{trade_date}/` 下产出候选股票信号文件（如 `candidates.json`），格式自定。SysA 直接读取该目录。
 
 ### 数据要求
 

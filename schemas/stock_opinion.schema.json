@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "trade_date", "ts_code", "name", "industry", "model_signals",
+    "data_sufficiency", "rating", "confidence", "one_line_summary",
+    "key_drivers", "financial_assessment", "industry_support",
+    "catalyst_assessment", "bear_cases", "rating_rationale",
+    "why_not_higher", "why_not_lower", "memory_patch",
+    "facts", "inferences", "uncertainties",
+    "evidence_ids", "evidence_insufficient"
+  ],
+  "properties": {
+    "trade_date": {"type": "string"},
+    "ts_code": {"type": "string"},
+    "name": {"type": "string"},
+    "industry": {"type": "string"},
+    "model_signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "horizon", "target", "score", "top_drivers", "signal_summary"],
+        "additionalProperties": false,
+        "properties": {
+          "name": {"type": "string"},
+          "horizon": {"type": "string"},
+          "target": {"type": "string"},
+          "weight": {"type": "number"},
+          "score": {"type": "number"},
+          "top_drivers": {"type": "array", "items": {"type": "string"}},
+          "signal_summary": {"type": "string"}
+        }
+      }
+    },
+    "data_sufficiency": {
+      "type": "object",
+      "required": ["financial_data_available", "news_data_available", "announcement_data_available", "industry_memory_available", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "financial_data_available": {"type": "boolean"},
+        "news_data_available": {"type": "boolean"},
+        "announcement_data_available": {"type": "boolean"},
+        "industry_memory_available": {"type": "boolean"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "rating": {"enum": ["A", "B", "C", "D"]},
+    "confidence": {"enum": ["high", "medium", "low"]},
+    "one_line_summary": {"type": "string"},
+    "key_drivers": {"type": "array", "items": {"type": "string"}},
+    "financial_assessment": {"enum": ["support", "neutral", "against", "insufficient"]},
+    "industry_support": {"type": "string"},
+    "catalyst_assessment": {"type": "string"},
+    "bear_cases": {"type": "array", "items": {"type": "string"}},
+    "rating_rationale": {"type": "array", "items": {"type": "string"}},
+    "why_not_higher": {"type": "string"},
+    "why_not_lower": {"type": "string"},
+    "memory_patch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["op", "target", "text", "reason", "evidence_ids"],
+        "additionalProperties": false,
+        "properties": {
+          "op": {"enum": ["add", "update", "delete", "no_change"]},
+          "target": {"enum": ["company", "industry"]},
+          "text": {"type": "string"},
+          "reason": {"type": "string"},
+          "evidence_ids": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_insufficient": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,89 @@
+{
+  "trade_date": "2026-06-26",
+  "ts_code": "002130.SZ",
+  "name": "沃尔核材",
+  "industry": "电气设备",
+  "model_signals": [
+    {
+      "name": "60d_return",
+      "horizon": "60d",
+      "target": "return",
+      "weight": 0.3,
+      "score": 0.101,
+      "top_drivers": [
+        "holder_num_stale_days(强负向)",
+        "ret_60d(正向,p90)"
+      ],
+      "signal_summary": "信号偏弱,方向矛盾"
+    },
+    {
+      "name": "180d_return",
+      "horizon": "180d",
+      "target": "return",
+      "weight": 0.7,
+      "score": 1.5203,
+      "top_drivers": [
+        "turnover_rate(全量最高)",
+        "margin_eligible(正向)"
+      ],
+      "signal_summary": "信号极强,全部因子高分位"
+    }
+  ],
+  "data_sufficiency": {
+    "financial_data_available": true,
+    "news_data_available": false,
+    "announcement_data_available": false,
+    "industry_memory_available": false,
+    "notes": [
+      "新闻和公告缺失"
+    ]
+  },
+  "rating": "B",
+  "confidence": "medium",
+  "one_line_summary": "180d极强但ROE和现金流限制评级上限",
+  "key_drivers": [
+    "180d:营收增长/大股东增持/ROE改善",
+    "60d:筹码负向"
+  ],
+  "financial_assessment": "support",
+  "industry_support": "电气设备景气上行,核电缆附件体量偏小",
+  "catalyst_assessment": "数据缺失",
+  "bear_cases": [
+    "ROE仅2.96%",
+    "现金转化率18.8%",
+    "近5日-13%"
+  ],
+  "rating_rationale": [
+    "180d极强1.5203",
+    "营收+15.5%",
+    "多模型不一致"
+  ],
+  "why_not_higher": "ROE2.96%现金流偏弱",
+  "why_not_lower": "180d rank1财务support",
+  "memory_patch": [
+    {
+      "op": "add",
+      "target": "company",
+      "text": "沃尔核材:180d rank1,Q1营收+15.5%,评级B",
+      "reason": "首次建立记忆",
+      "evidence_ids": [
+        "2026-06-26_002130.SZ_models"
+      ]
+    }
+  ],
+  "facts": [
+    "60d 0.101 / 180d 1.5203",
+    "营收+15.5%",
+    "ROE 2.96%"
+  ],
+  "inferences": [
+    "长线质量因子叙事成立"
+  ],
+  "uncertainties": [
+    "现金流季节性?"
+  ],
+  "evidence_ids": [
+    "2026-06-26_002130.SZ_models"
+  ],
+  "evidence_insufficient": true
+}
