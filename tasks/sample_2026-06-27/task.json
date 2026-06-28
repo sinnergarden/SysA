@@ -1,8 +1,11 @@
 {
   "task_id": "sample_2026-06-27",
   "trade_date": "2026-06-27",
-  "model_horizon": "60d",
-  "model_target": "return",
+  "primary_model": {
+    "horizon": "60d",
+    "target": "return",
+    "description": "未来 60 天截面收益排序，分数越高预期收益越高。universe 按此 score 降序排列。"
+  },
   "universe": [
     {
       "ts_code": "000001.SZ",
@@ -21,6 +24,26 @@
           "profit_quality": {"min": -0.40, "max": 0.55, "mean": 0.06, "p50": 0.05, "p75": 0.15, "p90": 0.30}
         }
       },
+      "auxiliary_signals": [
+        {
+          "name": "180d_return_zscore",
+          "description": "同一模型预测未来 180 天收益在全量候选上的 z-score，正值表示优于平均",
+          "value": 1.24,
+          "feature_contrib": {
+            "method": "shap",
+            "values": {
+              "earnings_revision": 0.18,
+              "valuation_spread": 0.09,
+              "profit_quality": 0.06
+            }
+          }
+        },
+        {
+          "name": "60d_pos_prob",
+          "description": "未来 60 天收益为正向的模型预估概率，>0.5 表示偏向正收益",
+          "value": 0.68
+        }
+      ],
       "industry": "Regional Banking",
       "input_paths": {
         "financial_template_json": "tasks/sample_2026-06-27/inputs/000001.SZ/financial_template.json",
@@ -47,6 +70,26 @@
           "theme_exposure": {"min": -0.20, "max": 0.60, "mean": 0.10, "p50": 0.08, "p75": 0.22, "p90": 0.40}
         }
       },
+      "auxiliary_signals": [
+        {
+          "name": "180d_return_zscore",
+          "description": "同一模型预测未来 180 天收益在全量候选上的 z-score",
+          "value": -0.34,
+          "feature_contrib": {
+            "method": "shap",
+            "values": {
+              "order_momentum": 0.08,
+              "gross_margin_trend": 0.04,
+              "theme_exposure": 0.02
+            }
+          }
+        },
+        {
+          "name": "60d_pos_prob",
+          "description": "未来 60 天收益为正向的模型预估概率",
+          "value": 0.52
+        }
+      ],
       "industry": "Industrial Robotics",
       "input_paths": {
         "financial_template_json": "tasks/sample_2026-06-27/inputs/600000.SH/financial_template.json",
