@@ -5,6 +5,16 @@ tools/__pycache__/
 # 运行态输出默认不入库
 research/**/*
 
+# 全局复用资源中的运行态数据
+resources/sysq_signals/**/*
+resources/financial/raw_pdfs/**/*
+resources/financial/parsed/**/*
+resources/news/**/*
+resources/announcements/**/*
+
+# 保留 memory（需人工确认后入库）
+!resources/memory/**/*
+
 # 保留样例
 !research/sample_2026-06-26/**/*
 
