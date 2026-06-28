@@ -19,7 +19,7 @@
 memory 缺失规则：
 
 - 如果 `company_memory_json` / `industry_memory_json` 路径缺失或文件不存在，本 step **不得失败**。
-- 无既有 memory 时，可以输出 `init` 类型 memory patch（首次建立记忆），或输出 `no_change`。
+- 无既有 memory 时，可以输出 `op=add` 的 memory patch，用于首次建立记忆；或输出 `op=no_change`。不得使用 `init` 作为 op。
 - 不得假装读取到了既有 memory。
 
 evidence 落盘规则：

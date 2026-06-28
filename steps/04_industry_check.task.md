@@ -20,6 +20,7 @@ memory 缺失规则：
 - 如果 `industry_memory_json` 路径缺失或文件不存在，本 step **不得失败**。
 - 此时 memory 视为 unavailable，在 `uncertainties` 中说明缺少历史行业 memory。
 - step 仍应基于行业标签和 agent 自身知识完成基本的行业检查。
+- agent 自身知识只能作为背景推断，不得写入 `facts`；若无外部 evidence 支撑，必须放入 `inferences` 或 `uncertainties`，并根据证据充分性设置 `evidence_insufficient`。
 
 evidence 落盘规则：
 
