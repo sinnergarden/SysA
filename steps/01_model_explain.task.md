@@ -4,9 +4,9 @@
 
 - `prompts/00_master.md`
 - `prompts/01_model_explain.md`
-- `tasks/<task_id>/task.json`
+- `tasks/<task_id>/task.json`（当前股票条目 + `factor_definitions` 全局因子释义表）
 
-只使用 `task.json` 中当前股票条目。
+只使用 `task.json` 中当前股票条目和全局 `factor_definitions`。
 
 写入：
 

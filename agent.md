@@ -2,13 +2,15 @@
 
 ## 系统目标
 
-`SysA` 是一个面向 `Qsys` 候选股票研究的文件系统任务链框架。它的目标是把：
+`SysA` 是一个面向 `Qsys` 候选股票研究的文件系统任务链框架。它的使命是：**接收 Qsys 的纯数值模型输出（分数 + 因子贡献），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论。**
 
-- 模型候选股票
-- 财报模板
-- 新闻与公告检索结果
-- 公司 memory
-- 行业 memory
+Qsys 作为一个量化系统，只能产出纯数值和结构化标签。所有需要自然语言理解的推理步骤——因子解释、财报验证、催化分析、行业判断、反证挑战、综合评级——都在 SysA 中由代码 agent 完成。
+
+具体是把：
+
+- Qsys 给出的候选股票名单与因子贡献（纯数值）
+- 外部原始材料：财报模板、新闻摘要、公告文本
+- SysA 历次积累的公司/行业长期记忆
 
 转成：
 
@@ -33,19 +35,26 @@
 
 ## 输入
 
-主输入是 `tasks/<task_id>/task.json`，其中包含：
+主输入是 `tasks/<task_id>/task.json`，其中包含三类信息来源：
 
-- 任务元信息
-- 候选股票列表
-- 每只股票对应的输入文件路径
+### 1. Qsys 产出（纯数值，不含自然语言）
 
-可选支持材料包括：
+- `universe[].model_score` — 模型对这只股票的打分
+- `universe[].feature_contrib` — 因子贡献度字典，如 `{"earnings_revision": 0.31}`。纯数值，不含解释
+- `universe[].model_rank` — 该股在当日的排名（可选）
+- `universe[].industry` — 行业分类标签
+- `factor_definitions` — 全局因子释义表，key=因子名，value=一句话定义。Qsys 提供，仍是结构化文本（如"盈利预测上修强度"），不需要 LLM 解释，但可供 step 01 的 agent 理解因子含义
 
-- 财务模板 JSON
-- 公司 memory JSON
-- 行业 memory JSON
-- 新闻检索结果 JSON
-- 公告 JSON
+### 2. 外部数据源提供（原始材料路径）
+
+- `input_paths.financial_template_json` — 财报模板 JSON
+- `input_paths.news_search_results_json` — 新闻检索结果 JSON
+- `input_paths.announcements_json` — 公告 JSON
+
+### 3. SysA 自身积累（可选，可能不存在）
+
+- `input_paths.company_memory_json` — 公司长期记忆（可选）
+- `input_paths.industry_memory_json` — 行业长期记忆（可选）
 
 ## 输出
 

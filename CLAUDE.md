@@ -4,25 +4,60 @@ This file provides guidance to **developers maintaining this repo**. For runtime
 
 ## 项目定位
 
-SysA 是一个**面向 Qsys 候选股票研究的最小可运行框架**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让代码 agent 按固定 7 步研究链逐票执行、全程结构化落盘。
+SysA 的使命是**接收 Qsys 的纯数值模型输出（分数 + 因子贡献），叠加外部原始材料（财报、新闻、公告），用 LLM 产出带证据链的结构化研究结论和 A/B/C/D 评级**。它定义一套 `prompts/`（研究规则） + `steps/`（task 文件） + `schemas/`（JSON 契约） + `tools/`（确定性工具），让代码 agent 按固定 7 步研究链逐票执行、全程结构化落盘。
 
 Fork/clone 此 repo 后可直接 commit 使用。SysA 框架本身不内置外部服务调用；实际执行 step 需要本地已登录的 Claude Code CLI / Codex CLI 等代码 agent。
+
+## 接口边界：Qsys 产出 vs SysA 研究
+
+Qsys 作为一个量化系统，只能产出**纯数值和结构化标签**。SysA 填补的是量化模型做不到、需要大语言模型推理的部分。边界如下：
+
+| 维度 | Qsys 能产出 | SysA 做（需要 LLM） |
+|------|------------|-------------------|
+| 股票名单与排序 | TopK 名单 + `model_score`（数值）+ `model_rank` | —— |
+| 因子贡献度 | `feature_contrib` 数值字典，如 `{"earnings_revision": 0.31}` | **step 01** — 结合 `factor_definitions` 解释各因子意义、为什么高/低、对股票意味着什么 |
+| 因子释义 | `factor_definitions` 结构化字典（key=因子名, value=一句话定义） | step 01 读取作为上下文，辅助解释 |
+| 财务数据 | ——（外部数据源提供原始指标模板） | **step 02** — 验证财报是否支持模型逻辑 |
+| 新闻与公告 | ——（外部数据源提供原始文本） | **step 03** — 分析催化和情绪，区分基本面 vs 题材热度 |
+| 行业分类 | `industry` 标签 | **step 04** — 判断供需、景气度、产业链位置、概念炒作风险 |
+| 反证 | —— | **step 05** — 主动找反证、脆弱点和逻辑漏洞 |
+| 评级 | —— | **step 06** — 汇总给出 A/B/C/D 评级 |
+| 长期记忆 | —— | **step 07** — 产出 memory 更新建议 |
+
+**关键约束**：`feature_contrib` 在 task.json 中应为纯数值结构（如 `{"factor_a": 0.31}`），不包含自然语言解释。任何"模型为什么选中该股"的文字说明都必须由 SysA step 01 产出，不得由 Qsys 预生成。`factor_definitions` 是结构化 key-value 映射，如 `{"earnings_revision": "盈利预测上修强度"}`，不是 NL 解释段落。
 
 ## 架构概述
 
 ```
-Qsys (上游)                     SysA                           代码 Agent (执行者)
-   ┌──────┐    task.json       ┌─────────────┐   读取 steps/*  ┌────────────────┐
-   │ 候选  │ ──────────────→   │ 研究框架     │ ←───────────  │ Claude Code CLI │
-   │ 股票  │                   │             │   写入 outputs/ │ Codex CLI       │
-   │ 模型分│                   │ prompts/    │ ────────────→  │ 等代码 agent    │
-   │ 输入  │                   │ schemas/     │                └────────────────┘
-   └──────┘                   └─────────────┘
+Qsys (纯数值产出)               SysA (研究框架)                  代码 Agent (执行者)
+   ┌──────────────┐           ┌──────────────────┐    读取 steps/*  ┌────────────────┐
+   │ model_score   │           │  prompts/        │ ←───────────  │ Claude Code CLI │
+   │ feature_contrib│ task.json│  steps/           │               │ Codex CLI       │
+   │ model_rank    │ ──────→  │  schemas/         │    写入        │ 等代码 agent    │
+   │ industry      │           │  tools/           │ ────────────→ │                │
+   │ factor_defs   │           │  memory/ (自积累) │               └────────────────┘
+   └──────────────┘           └──────────────────┘
+
+外部数据源（原始材料）                ↑
+   ┌──────────────────┐     input_paths 指向
+   │ 财报模板 JSON     │ ────────────
+   │ 新闻检索结果 JSON  │
+   │ 公告 JSON         │
+   └──────────────────┘
+
+memory/ (SysA 自身积累，非 Qsys 产出)
+   ┌──────────────────┐
+   │ company_memory   │ ←──── 历次研究的长期认知沉淀
+   │ industry_memory  │
+   └──────────────────┘
 ```
 
 - **SysA 不内置 LLM 调用**，agent 负责 LLM 交互。
 - **SysA 不在 Python 中写推理逻辑**，研究规则在 `prompts/` 中。
 - **SysA 不下单、不接交易**，只输出 A/B/C/D 研究评级。
+- **Qsys 只出纯数值**：`model_score`、`feature_contrib`、`model_rank`、`industry` 标签、`factor_definitions`（结构化 key-value）。不含任何 NL 解释。
+- **外部数据源提供原始材料**：财报模板、新闻结果、公告全文。这些不是 Qsys 产出，由独立数据源获取。
+- **SysA 积累自己的 memory**：`memory/` 下的 company/industry memory 是 SysA 在历次研究中积累的长期认知，不是 Qsys 的产出。
 
 ## 执行方式（当前 MVP）
 

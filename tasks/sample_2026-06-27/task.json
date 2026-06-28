@@ -1,11 +1,20 @@
 {
   "task_id": "sample_2026-06-27",
   "trade_date": "2026-06-27",
+  "factor_definitions": {
+    "earnings_revision": "盈利预测上修强度，正数表示分析师近期上调盈利预测",
+    "valuation_spread": "估值分位数差，衡量当前估值在历史区间中的位置与同业之间的偏离",
+    "profit_quality": "盈利质量，基于营收与现金流的匹配度",
+    "order_momentum": "订单动量，反映近期公告订单/合同增长趋势",
+    "gross_margin_trend": "毛利率趋势，多个季度毛利率的变化方向与幅度",
+    "theme_exposure": "主题暴露度，衡量公司业务关联当前市场热点主题的程度"
+  },
   "universe": [
     {
       "ts_code": "000001.SZ",
       "name": "Sample Bank A",
       "model_score": 0.82,
+      "model_rank": 3,
       "feature_contrib": {
         "earnings_revision": 0.31,
         "valuation_spread": 0.22,
@@ -24,6 +33,7 @@
       "ts_code": "600000.SH",
       "name": "Sample Robotics B",
       "model_score": 0.76,
+      "model_rank": 7,
       "feature_contrib": {
         "order_momentum": 0.29,
         "gross_margin_trend": 0.19,

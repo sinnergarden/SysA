@@ -8,6 +8,7 @@
 
 - `model_score`
 - `feature_contrib`
+- `factor_definitions`（全局因子释义表，辅助理解各因子含义）
 
 应该做：
 
