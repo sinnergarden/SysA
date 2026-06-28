@@ -1,0 +1,32 @@
+{
+  "trade_date": "2026-06-26",
+  "universe_count": 1,
+  "stocks": [
+    {
+      "ts_code": "002130.SZ",
+      "name": "沃尔核材",
+      "industry": "电气设备",
+      "data_available": {
+        "sysq_signal": true,
+        "financial": true,
+        "news": false,
+        "announcements": false,
+        "company_memory": false,
+        "industry_memory": false
+      },
+      "missing_data": [
+        "news",
+        "announcements",
+        "company_memory",
+        "industry_memory"
+      ],
+      "financial_brief": "营收同比+15.5%,毛利率30.5%,负债率35.8%,ROE2.96%",
+      "news_brief": "",
+      "announcements_brief": ""
+    }
+  ],
+  "overall_status": "partial",
+  "uncertainties": [
+    "新闻和公告数据缺失"
+  ]
+}

@@ -9,6 +9,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["ts_code", "name", "industry", "data_available", "missing_data"],
         "properties": {
           "ts_code": {"type": "string"},
@@ -16,6 +17,8 @@
           "industry": {"type": "string"},
           "data_available": {
             "type": "object",
+            "required": ["sysq_signal", "financial", "news", "announcements", "company_memory", "industry_memory"],
+            "additionalProperties": false,
             "properties": {
               "sysq_signal": {"type": "boolean"},
               "financial": {"type": "boolean"},

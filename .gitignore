@@ -5,9 +5,6 @@ tools/__pycache__/
 # 运行态数据与输出默认不入库
 research/**/*
 
-# 保留 sample 输出样例
-!research/2026-06-26/output/**/*
-
 # 保留框架占位
 !research/**/.gitkeep
 
