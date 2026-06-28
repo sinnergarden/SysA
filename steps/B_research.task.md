@@ -5,7 +5,7 @@
 - `prompts/00_master.md`
 - `prompts/B_research.md`
 - `research/{trade_date}/output/data_readiness.json`
-- `research/{trade_date}/data/` 下的完整数据
+- `resources/` 下的完整数据（sysq_signals / financial/parsed / news / announcements / memory）
 
 写入：
 

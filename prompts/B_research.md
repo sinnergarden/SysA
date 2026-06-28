@@ -10,12 +10,12 @@
 - `prompts/00_master.md`
 - `prompts/B_research.md`
 - `research/{trade_date}/output/data_readiness.json`
-- `research/{trade_date}/data/sysq_signals/candidates.json`
-- `research/{trade_date}/data/financial/{ts_code}.json`
-- `research/{trade_date}/data/news/{ts_code}.json`
-- `research/{trade_date}/data/announcements/{ts_code}.json`
-- `research/{trade_date}/data/memory/company/{ts_code}.json`（如有）
-- `research/{trade_date}/data/memory/industry/{industry}.json`（如有）
+- `resources/sysq_signals/{trade_date}.json`
+- `resources/financial/parsed/{ts_code}.json`（如有）
+- `resources/news/{ts_code}.json`（如有）
+- `resources/announcements/{ts_code}.json`（如有）
+- `resources/memory/company/{ts_code}.json`（如有）
+- `resources/memory/industry/{industry}.json`（如有）
 
 ## 研究流程
 
@@ -34,8 +34,8 @@
 ```
 研究框架：
 - 模型信号解读：各模型的 score 含义、top_drivers 解读、多模型一致性
-- 财务验证：财报数据是否支持模型逻辑
-- 催化分析：近期新闻/公告是否存在基本面催化
+- 财务验证：财报数据是否支持模型逻辑（从 financial/parsed/ 读取）
+- 催化分析：news/announcements 中近期信息
 - 行业支撑：引用步骤 1 的 industry_summary
 - 反证挑战：最强的反向论证和风险点
 - 综合评级：A/B/C/D, high/medium/low

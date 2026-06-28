@@ -2,8 +2,11 @@ __pycache__/
 *.pyc
 tools/__pycache__/
 
-# 运行态数据与输出默认不入库
+# 运行态输出默认不入库
 research/**/*
+
+# 保留样例
+!research/sample_2026-06-26/**/*
 
 # 保留框架占位
 !research/**/.gitkeep

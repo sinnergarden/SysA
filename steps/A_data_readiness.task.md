@@ -4,7 +4,7 @@
 
 - `prompts/00_master.md`
 - `prompts/A_data_readiness.md`
-- `research/{trade_date}/` 下的各数据源
+- `resources/` 下的各数据源
 
 写入：
 
