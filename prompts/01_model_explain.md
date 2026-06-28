@@ -6,26 +6,27 @@
 
 只使用：
 
-- `primary_model` — 主信号定义（horizon / target / description），理解 model_score 的业务语义。例如 "未来 60 天截面收益排序，越高越看好"
-- `model_score` — 主信号打分，在 universe 内相对比较
-- `feature_contrib.values` — 主信号因子贡献度数值
-- `feature_contrib.universe_stats` — 各因子在全量候选中的分布，用于判断贡献度高低
-- `feature_contrib.method` — 归因方法（SHAP / 线性权重 / 等），评估数值可靠性
-- `auxiliary_signals[]` — 辅助信号列表。每项有 `name`、`description`、`value`、可选 `feature_contrib`。用于交叉验证主信号方向是否与其他信号一致
+- `ranking_model.description` — 理解 TopK 排序信号如何生成
+- `ranking_score` — 该股的排序分，仅在 universe 内做相对比较
+- `models[]` — **核心分析对象**。每个模型有 `name`、`horizon`、`target`、`weight`（可选）、`score`、`feature_contrib`
+- `models[].feature_contrib.values` — 该模型的因子贡献度数值
+- `models[].feature_contrib.universe_stats` — 各因子在全量候选中的分布，用于判断贡献度高低
+- `models[].feature_contrib.method` — 归因方法（SHAP / 线性权重 / 等），评估数值可靠性
 
 应该做：
 
-- 对照 `primary_model.description` 理解 model_score 的业务含义
-- 对照 `universe_stats` 判断各因子贡献的幅度（该值处于什么分位）
+- 如果只有 1 个模型：正常解释该模型的因子归因
+- 如果有多个模型：**对比各模型得分和归因的异同**。例如：60d 模型 earnings_revision 贡献 0.31 驱动 60d 高分，180d 模型同一因子贡献仅 0.18，说明短期信号主要来自盈利上修，长线更看重估值修复
+- 根据各模型 weight（如有）说明融合方向偏向哪个时间维度
 - 对照 `method` 评估归因可靠性
-- 如果存在 `auxiliary_signals`，对比主信号与辅助信号的方向一致性。例如：主信号 60d return 高，辅助 180d z-score 也高 → 加分；主信号高但 60d_pos_prob 接近 0.5 → 不确定性高
 - 总结驱动入选的主要特征，区分强驱动与弱驱动
 - 说明模型逻辑中不完整或模糊的部分
 
 约束：
 
 - `feature_contrib.values` 的数值贡献可以解释模型信号的强弱和方向，**不能**替代财报、新闻、公告等外部证据。高的贡献度不等于基本面利好，低的贡献度也不等于基本面利空。
-- `auxiliary_signals` 只用于对比信号方向的一致性，**不能**作为独立于主信号的选股依据。
+- 输出中**不得使用 `model_score` 字段**。输出 `ranking_score`（仅说明 TopK 排序来源）和 `model_signal_summary`（各模型的独立分析）即可。
+- `ranking_score` 只能说明这只股票为什么进入研究候选，**不能作为任何归因判断的证据**。所有归因解释必须来自 `models[].feature_contrib`。
 
 不要做：
 
