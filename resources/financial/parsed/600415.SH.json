@@ -1,0 +1,13 @@
+{
+  "ts_code": "600415.SH",
+  "name": "小商品城",
+  "status": "placeholder",
+  "note": "需从 financial/raw_pdfs/ 下载最近3年年报和所有季度报后解析",
+  "report_coverage": {
+    "annual_reports": [],
+    "quarterly_reports": [],
+    "latest_report_date": ""
+  },
+  "mda_summary": "",
+  "key_metrics": {}
+}
