@@ -35,7 +35,7 @@
               "method": {"type": "string", "description": "归因方法，如 shap / permutation_importance / linear_weight"},
               "values": {
                 "type": "object",
-                "description": "因子贡献度数值。key=因子名, value=贡献度。纯数值，不含 NL 解释。",
+                "description": "因子贡献度数值。key=因子名, value=贡献度。最多保留 15 个贡献度最高的因子，按 |contrib| 降序排列。纯数值，不含 NL 解释。",
                 "patternProperties": {
                   "^[A-Za-z0-9_]+$": {"type": "number"}
                 },
