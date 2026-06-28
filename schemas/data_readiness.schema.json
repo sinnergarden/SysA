@@ -10,7 +10,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["ts_code", "name", "industry", "data_available", "missing_data"],
+        "required": ["ts_code", "name", "industry", "data_available", "missing_data", "financial_report_coverage", "mda_summary"],
         "properties": {
           "ts_code": {"type": "string"},
           "name": {"type": "string"},
@@ -29,6 +29,19 @@
             }
           },
           "missing_data": {"type": "array", "items": {"type": "string"}},
+          "financial_report_coverage": {
+            "type": "object",
+            "description": "覆盖的财报年份和季度",
+            "properties": {
+              "annual_reports": {"type": "array", "items": {"type": "string"}, "description": "覆盖的完整财年年份,如 ['2023','2024','2025']"},
+              "quarterly_reports": {"type": "array", "items": {"type": "string"}, "description": "覆盖的季报期间,如 ['2026Q1']"},
+              "latest_report_date": {"type": "string", "description": "最新可用财报的截止日期"}
+            }
+          },
+          "mda_summary": {
+            "type": "string",
+            "description": "管理层讨论与分析的核心变化摘要,如'2025年报强调新能源转型,2026Q1新增提及产能扩张计划'"
+          },
           "financial_brief": {"type": "string"},
           "news_brief": {"type": "string"},
           "announcements_brief": {"type": "string"}
