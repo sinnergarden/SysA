@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "trade_date",
+    "ts_code",
+    "name",
+    "industry_validation",
+    "summary",
+    "structural_supports",
+    "hype_risks",
+    "facts",
+    "inferences",
+    "uncertainties",
+    "evidence_ids",
+    "evidence_insufficient"
+  ],
+  "properties": {
+    "trade_date": {"type": "string"},
+    "ts_code": {"type": "string"},
+    "name": {"type": "string"},
+    "industry_validation": {"enum": ["support", "neutral", "against", "insufficient"]},
+    "summary": {"type": "string"},
+    "structural_supports": {"type": "array", "items": {"type": "string"}},
+    "hype_risks": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"type": "string"}},
+    "inferences": {"type": "array", "items": {"type": "string"}},
+    "uncertainties": {"type": "array", "items": {"type": "string"}},
+    "evidence_ids": {"type": "array", "items": {"type": "string"}},
+    "evidence_insufficient": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

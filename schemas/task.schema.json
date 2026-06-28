@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["task_id", "trade_date", "ranking_model", "universe"],
+  "description": "任务输入包。由 thin runner 组装，整合 SysQ 产出、外部数据路径、SysA 自身记忆路径。",
+  "properties": {
+    "task_id": {"type": "string", "description": "任务标识，格式 {trade_date}_v{N}"},
+    "trade_date": {"type": "string", "description": "交易日，格式 YYYY-MM-DD"},
+    "ranking_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description"],
+      "description": "排序信号定义。universe 按此信号排名选股，但个股归因以 models[] 中各模型原始 SHAP 为准。",
+      "properties": {
+        "description": {"type": "string", "description": "一句话说明排序信号如何生成。如 '0.3 * 60d_return + 0.7 * 180d_return 融合排序分'。供 LLM 理解 TopK 来源。"}
+      }
+    },
+    "universe": {
+      "type": "array",
+      "minItems": 1,
+      "description": "候选股票列表。按 ranking_score 降序排列，位置即排名。",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ts_code", "name", "ranking_score", "models", "industry", "input_paths"],
+        "properties": {
+          "ts_code": {"type": "string", "description": "股票代码，如 000001.SZ"},
+          "name": {"type": "string", "description": "股票名称"},
+          "ranking_score": {"type": "number", "description": "融合排序分，仅用于 universe 排名。SysA 不做跨票比较。"},
+          "models": {
+            "type": "array",
+            "minItems": 1,
+            "description": "该股票所属各模型的独立打分与因子归因。每个模型含 name/horizon/target/weight/score/feature_contrib。",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "horizon", "target", "score", "feature_contrib"],
+              "properties": {
+                "name": {"type": "string", "description": "模型名，如 '60d_return' / '180d_return'"},
+                "horizon": {"type": "string", "description": "预测周期，如 '60d' / '180d'"},
+                "target": {"type": "string", "description": "预测目标，如 'return' / 'rank' / 'excess_return'"},
+                "weight": {"type": "number", "description": "可选。该模型在融合排序中的权重。如 0.3"},
+                "score": {"type": "number", "description": "该模型对该股票的原始打分"},
+                "feature_contrib": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["method", "values", "universe_stats"],
+                  "description": "该模型的因子贡献度。method 说明归因方法，values 为因子数值，universe_stats 为全量候选分布统计。",
+                  "properties": {
+                    "method": {"type": "string", "description": "归因方法，如 shap / permutation_importance / linear_weight"},
+                    "values": {
+                      "type": "object",
+                      "description": "因子贡献度数值。最多保留 15 个 |contrib| 最高的因子，按绝对值降序。纯数值，不含 NL 解释。",
+                      "patternProperties": {
+                        "^[A-Za-z0-9_]+$": {"type": "number"}
+                      },
+                      "additionalProperties": false
+                    },
+                    "universe_stats": {
+                      "type": "object",
+                      "description": "该因子在全量候选集上的统计分布。",
+                      "patternProperties": {
+                        "^[A-Za-z0-9_]+$": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "min": {"type": "number"}, "max": {"type": "number"}, "mean": {"type": "number"},
+                            "p50": {"type": "number"}, "p75": {"type": "number"}, "p90": {"type": "number"}
+                          },
+                          "required": ["min", "max", "mean", "p50", "p75", "p90"]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "industry": {"type": "string", "description": "行业分类标签，SysQ 提供"},
+          "input_paths": {
+            "type": "object",
+            "description": "输入文件路径。financial/news/announcements 由外部数据源提供；company/industry memory 是 SysA 自身可选积累。",
+            "required": ["financial_template_json", "news_search_results_json", "announcements_json"],
+            "properties": {
+              "financial_template_json": {"type": "string", "description": "财报模板 JSON 路径，外部数据源提供"},
+              "company_memory_json": {"type": "string", "description": "公司长期记忆 JSON 路径（可选），SysA 自身积累"},
+              "industry_memory_json": {"type": "string", "description": "行业长期记忆 JSON 路径（可选），SysA 自身积累"},
+              "news_search_results_json": {"type": "string", "description": "新闻搜索结果 JSON 路径，外部数据源提供"},
+              "announcements_json": {"type": "string", "description": "公告 JSON 路径，外部数据源提供"}
+            },
+            "additionalProperties": {"type": "string"}
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
