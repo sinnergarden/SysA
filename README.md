@@ -50,7 +50,9 @@
 - `examples/`：样例
 - `docs/`：SysQ 接口需求文档
 
-## 使用方式
+## 迁移说明
+
+SysA 的设计成果已迁移至 [TradingAgents-CN](https://github.com/hsliuping/TradingAgents-CN)。关键设计（SysQ 信号接口、两步法、证据链、评级体系）见 [docs/migration_to_tradingagents.md](docs/migration_to_tradingagents.md)。
 
 1. 确认 `resources/` 下已有必要数据
 2. 执行 `steps/A_data_readiness.task.md`
